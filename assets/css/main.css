@@ -333,7 +333,7 @@ button:active {
     background-size: cover;
     backface-visibility: hidden;
     background-repeat: no-repeat;
-    animation: slideBg 300ms ease-in-out infinite 1s;
+    animation: slideBg 300s step-start infinite 1s;
     background-image: url('./images/lukasz-szmigiel-NeSykhHkyQw-unsplash.jpg');
     transition-duration: 0.5s;
     -webkit-transition-duration: 10ms;
