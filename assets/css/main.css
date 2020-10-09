@@ -283,29 +283,29 @@ a:hover {
     background-repeat: no-repeat;
     animation: slideBg 60s linear infinite 0s;
     animation-timing-function: ease-in-out;
-    background-image: url('assets/css/images/bg.jpg');
+    background-image: url('./images/bg.jpg');
     width: 100%;
     height: 100%;
 }
 
 @keyframes slideBg {
     0% {
-        background-image: url('assets/css/images/adrian-korte-5gn2soeAc40-unsplash.jpg')
+        background-image: url('./images/adrian-korte-5gn2soeAc40-unsplash.jpg')
     }
-    8% {
-        background-image: url('assets/css/images/frank-mckenna-OD9EOzfSOh0-unsplash.jpg')
+    20% {
+        background-image: url('./images/frank-mckenna-OD9EOzfSOh0-unsplash.jpg')
     }
-    17% {
-        background-image: url('assets/css/images/mickey-o-neil-xL66l--msXU-unsplash.jpg')
+    40% {
+        background-image: url('./images/mickey-o-neil-xL66l--msXU-unsplash.jpg')
     }
-    25% {
-        background-image: url('assets/css/images/mohammad-metri-1oKxSKSOowE-unsplash.jpg')
+    60% {
+        background-image: url('./images/mohammad-metri-1oKxSKSOowE-unsplash.jpg')
     }
-    50% {
-        background-image: url('assets/css/images/pineapple-supply-co-qWlkCwBnwOE-unsplash.jpg')
+    80% {
+        background-image: url('./images/pineapple-supply-co-qWlkCwBnwOE-unsplash.jpg')
     }
     100% {
-        background-image: url('assets/css/images/toa-heftiba-mZb1YnKJfDU-unsplash.jpg')
+        background-image: url('./images/toa-heftiba-mZb1YnKJfDU-unsplash.jpg')
     }
 }
 
