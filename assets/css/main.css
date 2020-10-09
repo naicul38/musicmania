@@ -193,7 +193,43 @@ a {
 }
 
 a:hover {
-    border-color: transparent;
+    border-color: white;
+    border-bottom: dotted 1px;
+}
+
+a:target {
+    border-color: white;
+    border-bottom: 1px;
+}
+
+button {
+    top: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: white;
+}
+
+button:hover {
+    top: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: grey;
+}
+
+button:focus,
+button:active {
+    top: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: lightslategrey;
+    box-shadow: none!important;
+    outline: none!important;
 }
 
 #button1 {
@@ -209,7 +245,8 @@ a:hover {
 }
 
 #button4 {
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    top: 0;
 }
 
 
@@ -296,31 +333,132 @@ a:hover {
     background-size: cover;
     backface-visibility: hidden;
     background-repeat: no-repeat;
-    animation: slideBg 60s linear infinite 0s;
-    animation-timing-function: ease-in-out;
-    background-image: url('./images/bg.jpg');
+    animation: slideBg 300s step-start infinite 0s;
+    background-image: url('./images/lukasz-szmigiel-NeSykhHkyQw-unsplash.jpg');
+    transition-duration: 0.5s;
+    -webkit-transition-duration: 10ms;
+    -moz-transition-duration: 10ms;
+    -o-transition-duration: 10ms;
     width: 100%;
     height: 100%;
+}
+
+.animation-fade-out {
+    animation: fade-out 1.5s steps(90) forwards;
+    -webkit-animation: fade-out 1.5s steps(90) forwards;
+    -moz-animation: fade-out 1.5s steps(90) forwards;
+}
+
+@-webkit-keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.0;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0.0;
+    }
+}
+
+.animation-fade-in {
+    animation: fade-in 1.5s steps(90) forwards;
+    -webkit-animation: fade-in 1.5s steps(90) forwards;
+    -moz-animation: fade-in 1.5s steps(90) forwards;
+}
+
+@-webkit-keyframes fade-in {
+    from {
+        opacity: 0.0;
+    }
+    to {
+        opacity: 1.0;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0.0;
+    }
+    to {
+        opacity: 1.0;
+    }
+}
+
+.animate-opacity {
+    -webkit-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
+    transition: opacity 1s ease-in-out;
+}
+
+.opacity-hidden {
+    opacity: 0;
+}
+
+.opacity-visible {
+    opacity: 1;
 }
 
 @keyframes slideBg {
     0% {
         background-image: url('./images/adrian-korte-5gn2soeAc40-unsplash.jpg')
     }
-    20% {
+    7% {
         background-image: url('./images/frank-mckenna-OD9EOzfSOh0-unsplash.jpg')
     }
-    40% {
+    13% {
         background-image: url('./images/mickey-o-neil-xL66l--msXU-unsplash.jpg')
     }
-    60% {
+    29% {
         background-image: url('./images/mohammad-metri-1oKxSKSOowE-unsplash.jpg')
     }
-    80% {
+    25% {
         background-image: url('./images/pineapple-supply-co-qWlkCwBnwOE-unsplash.jpg')
     }
-    100% {
+    30% {
         background-image: url('./images/toa-heftiba-mZb1YnKJfDU-unsplash.jpg')
+    }
+    35% {
+        background-image: url('./images/daniel-cheung-B7N0IjiIJYo-unsplash.jpg')
+    }
+    40% {
+        background-image: url('./images/elle-hughes-sFU3-fwZ6nQ-unsplash.jpg')
+    }
+    45% {
+        background-image: url('./images/filip-filkovic-philatz-YivSbcIL_fk-unsplash.jpg')
+    }
+    50% {
+        background-image: url('./images/jack-anstey-zS4lUqLEiNA-unsplash.jpg')
+    }
+    55% {
+        background-image: url('./images/james-pond-26vBUtlufFo-unsplash.jpg')
+    }
+    60% {
+        background-image: url('./images/jeremy-zero-mQ06kMiQpnc-unsplash.jpg')
+    }
+    65% {
+        background-image: url('./images/jimmy-conover-4DP4P3v-dGk-unsplash.jpg')
+    }
+    70% {
+        background-image: url('./images/joshua-rondeau-gfEMELJ7WMg-unsplash.jpg')
+    }
+    75% {
+        background-image: url('./images/marvin-meyer-hwkTELbKW2s-unsplash.jpg')
+    }
+    80% {
+        background-image: url('./images/photo-1554908081-267299e53de8.jpeg')
+    }
+    90% {
+        background-image: url('./images/ubey-ahmed-xFViNcusUb0-unsplash.jpg')
+    }
+    100% {
+        background-image: url('./images/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg')
     }
 }
 
@@ -589,12 +727,15 @@ nav {
 
 #header p {
     font-size: 1.25em;
-    margin: 0.75em 0 0.25em 0;
     opacity: 0.75;
+    top: 0;
+    vertical-align: top;
+    text-align: left;
+    position: absolute;
 }
 
 #header {
-    margin: 1.5em 0 0 0;
+    margin: 0.5em 0 0 0;
 }
 
 #header nav li {
@@ -720,11 +861,16 @@ nav {
 #header nav a:hover:before {
     background-color: rgba(255, 255, 255, 0.175);
     color: #fff;
+    text-decoration: dotted 1px;
+    text-underline-position: below;
+    visibility: hidden;
 }
 
 #header nav a:active {
     font-size: 0.95em;
     background: none;
+    border-bottom: dotted 1px;
+    color: #fff;
 }
 
 #header nav a:active:before {
