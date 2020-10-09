@@ -543,9 +543,9 @@ a:hover {
     display: inline-block;
     opacity: 0;
     position: relative;
-    text-align: center;
+    text-align: left;
     top: -1em;
-    vertical-align: middle;
+    vertical-align: top;
     width: 90%;
 }
 
