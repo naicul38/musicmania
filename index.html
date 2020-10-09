@@ -19,21 +19,22 @@
             <header id="header">
                 <h1>Vicecream Tunes</h1>
                 <p>
-                    <a id="paradise" onclick="loadStream(0)" style="cursor:pointer"> Lounge  </a>&nbsp;&bull;&nbsp;
-                    <a id="paradise" onclick="loadStream(1)" style="cursor:pointer">  Cool   </a>&nbsp;&bull;&nbsp;
-                    <a id="paradise" onclick="loadStream(2)" style="cursor:pointer">  Rock  </a>&nbsp;&bull;&nbsp;
-                    <a id="paradise" onclick="loadStream(3)" style="cursor:pointer">  Party </a>
+                    <a id="button1" onclick="loadStream(0)" style="cursor:pointer"> Lounge  </a>&nbsp;&bull;&nbsp;
+                    <a id="button2" onclick="loadStream(1)" style="cursor:pointer">  Cool   </a>&nbsp;&bull;&nbsp;
+                    <a id="button3" onclick="loadStream(2)" style="cursor:pointer">  Rock  </a>&nbsp;&bull;&nbsp;
+                    <a id="button4" onclick="loadStream(3)" style="cursor:pointer">  Party </a>
                 </p>
-                <nav>
-                    <ul>
-                        <li><a id="playbackButton" href="#" class="icon fa-play" onclick="changePlayback()"><span class="label">Music</span></a></li>
-                    </ul>
-                </nav>
-                <div id="label">
 
-                </div>
             </header>
         </div>
+    </div>
+    <nav>
+        <ul>
+            <li valign="bottom"><a id="playbackButton" href="#" class="icon fa-play" onclick="changePlayback()"><span class="label">Music</span></a></li>
+        </ul>
+    </nav>
+    <div id="label">
+
     </div>
     <script>
         window.onload = function() {
