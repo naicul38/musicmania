@@ -274,122 +274,39 @@ a:hover {
 /* BG */
 
 #bg {
-    background: url("images/bg.jpg") no-repeat center center fixed;
+    background-position: center center;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    height: 100%;
-}
-
-
-/* Slideshow */
-
-.cb-slideshow li span {
+    backface-visibility: hidden;
+    background-repeat: no-repeat;
+    animation: slideBg 60s linear infinite 0s;
+    animation-timing-function: ease-in-out;
+    background-image: url('assets/css/images/bg.jpg');
     width: 100%;
     height: 100%;
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    color: transparent;
-    background-size: cover;
-    background-position: 50% 50%;
-    background-repeat: none;
-    opacity: 0;
-    z-index: 0;
-    animation: imageAnimation 36s linear infinite 0s;
 }
 
-.cb-slideshow li div {
-    z-index: 1000;
-    position: absolute;
-    bottom: 30px;
-    left: 0px;
-    width: 100%;
-    text-align: center;
-    opacity: 0;
-    color: #fff;
-    animation: titleAnimation 36s linear infinite 0s;
-}
-
-.cb-slideshow li div h3 {
-    font-family: 'BebasNeueRegular', 'Arial Narrow', Arial, sans-serif;
-    font-size: 240px;
-    padding: 0;
-    line-height: 200px;
-}
-
-.cb-slideshow li:nth-child(1) span {
-    background-image: url(../assets/css/images/adrian-korte-5gn2soeAc40-unsplash.jpg)
-}
-
-.cb-slideshow li:nth-child(2) span {
-    background-image: url(../assets/css/images/frank-mckenna-OD9EOzfSOh0-unsplash.jpg);
-    animation-delay: 6s;
-}
-
-.cb-slideshow li:nth-child(3) span {
-    background-image: url(../assets/css/images/mickey-o-neil-xL66l--msXU-unsplash.jpg);
-    animation-delay: 12s;
-}
-
-.cb-slideshow li:nth-child(4) span {
-    background-image: url(../assets/css/images/mohammad-metri-1oKxSKSOowE-unsplash.jpg);
-    animation-delay: 18s;
-}
-
-.cb-slideshow li:nth-child(5) span {
-    background-image: url(../assets/css/images/pineapple-supply-co-qWlkCwBnwOE-unsplash.jpg);
-    animation-delay: 24s;
-}
-
-.cb-slideshow li:nth-child(6) span {
-    background-image: url(../assets/css/images/toa-heftiba-mZb1YnKJfDU-unsplash.jpg);
-    animation-delay: 30s;
-}
-
-.cb-slideshow li:nth-child(2) div {
-    animation-delay: 6s;
-}
-
-.cb-slideshow li:nth-child(3) div {
-    animation-delay: 12s;
-}
-
-.cb-slideshow li:nth-child(4) div {
-    animation-delay: 18s;
-}
-
-.cb-slideshow li:nth-child(5) div {
-    animation-delay: 24s;
-}
-
-.cb-slideshow li:nth-child(6) div {
-    animation-delay: 30s;
-}
-
-@keyframes imageAnimation {
+@keyframes slideBg {
     0% {
-        opacity: 0;
-        animation-timing-function: ease-in;
+        background-image: url('assets/css/images/adrian-korte-5gn2soeAc40-unsplash.jpg')
     }
     8% {
-        opacity: 1;
-        animation-timing-function: ease-out;
+        background-image: url('assets/css/images/frank-mckenna-OD9EOzfSOh0-unsplash.jpg')
     }
     17% {
-        opacity: 1
+        background-image: url('assets/css/images/mickey-o-neil-xL66l--msXU-unsplash.jpg')
     }
     25% {
-        opacity: 0
+        background-image: url('assets/css/images/mohammad-metri-1oKxSKSOowE-unsplash.jpg')
+    }
+    50% {
+        background-image: url('assets/css/images/pineapple-supply-co-qWlkCwBnwOE-unsplash.jpg')
     }
     100% {
-        opacity: 0
+        background-image: url('assets/css/images/toa-heftiba-mZb1YnKJfDU-unsplash.jpg')
     }
-}
-
-.no-cssanimations .cb-slideshow li span {
-    opacity: 1;
 }
 
 
