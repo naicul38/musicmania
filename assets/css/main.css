@@ -194,7 +194,6 @@ a {
 
 a:hover {
     border-color: white;
-    border-bottom: dotted 1px;
 }
 
 a:target {
@@ -247,6 +246,28 @@ button:active {
 
 #button4 {
     font-family: a_alloy_inkregular
+}
+
+#authorname {
+    -moz-animation: nav-icons 0.5s ease-in-out forwards;
+    -webkit-animation: nav-icons 0.5s ease-in-out forwards;
+    -ms-animation: nav-icons 0.5s ease-in-out forwards;
+    animation: nav-icons 0.5s ease-in-out forwards;
+    position: absolute;
+    bottom: 1%;
+    right: 2%;
+    vertical-align: bottom;
+    text-align: right;
+    line-height: 2.5em;
+    font-family: cabin_sketchregular;
+    font-size: 20px;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+#authorname:hover {
+    color: black;
 }
 
 
@@ -333,8 +354,7 @@ button:active {
     background-size: cover;
     backface-visibility: hidden;
     background-repeat: no-repeat;
-    animation: slideBg 300s step-start infinite 0s;
-    background-image: url('./images/lukasz-szmigiel-NeSykhHkyQw-unsplash.jpg');
+    background-image: url('./images/adrian-korte-5gn2soeAc40-unsplash.jpg');
     width: 100%;
     height: 100%;
 }
@@ -399,63 +419,6 @@ button:active {
 
 .opacity-visible {
     opacity: 1;
-}
-
-@keyframes slideBg {
-    0% {
-        background-image: url('./images/adrian-korte-5gn2soeAc40-unsplash.jpg')
-    }
-    7% {
-        background-image: url('./images/frank-mckenna-OD9EOzfSOh0-unsplash.jpg')
-    }
-    13% {
-        background-image: url('./images/mickey-o-neil-xL66l--msXU-unsplash.jpg')
-    }
-    29% {
-        background-image: url('./images/mohammad-metri-1oKxSKSOowE-unsplash.jpg')
-    }
-    25% {
-        background-image: url('./images/pineapple-supply-co-qWlkCwBnwOE-unsplash.jpg')
-    }
-    30% {
-        background-image: url('./images/toa-heftiba-mZb1YnKJfDU-unsplash.jpg')
-    }
-    35% {
-        background-image: url('./images/daniel-cheung-B7N0IjiIJYo-unsplash.jpg')
-    }
-    40% {
-        background-image: url('./images/elle-hughes-sFU3-fwZ6nQ-unsplash.jpg')
-    }
-    45% {
-        background-image: url('./images/filip-filkovic-philatz-YivSbcIL_fk-unsplash.jpg')
-    }
-    50% {
-        background-image: url('./images/jack-anstey-zS4lUqLEiNA-unsplash.jpg')
-    }
-    55% {
-        background-image: url('./images/james-pond-26vBUtlufFo-unsplash.jpg')
-    }
-    60% {
-        background-image: url('./images/jeremy-zero-mQ06kMiQpnc-unsplash.jpg')
-    }
-    65% {
-        background-image: url('./images/jimmy-conover-4DP4P3v-dGk-unsplash.jpg')
-    }
-    70% {
-        background-image: url('./images/joshua-rondeau-gfEMELJ7WMg-unsplash.jpg')
-    }
-    75% {
-        background-image: url('./images/marvin-meyer-hwkTELbKW2s-unsplash.jpg')
-    }
-    80% {
-        background-image: url('./images/photo-1554908081-267299e53de8.jpeg')
-    }
-    90% {
-        background-image: url('./images/ubey-ahmed-xFViNcusUb0-unsplash.jpg')
-    }
-    100% {
-        background-image: url('./images/xavi-cabrera-kn-UmDZQDjM-unsplash.jpg')
-    }
 }
 
 
@@ -689,6 +652,7 @@ nav {
     font-size: 1.75em;
     height: 2.5em;
     line-height: 2.5em;
+    border: none;
 }
 
 #header {
@@ -857,15 +821,12 @@ nav {
 #header nav a:hover:before {
     background-color: rgba(255, 255, 255, 0.175);
     color: #fff;
-    text-decoration: dotted 1px;
-    text-underline-position: below;
     visibility: hidden;
 }
 
 #header nav a:active {
     font-size: 0.95em;
     background: none;
-    border-bottom: dotted 1px;
     color: #fff;
 }
 
