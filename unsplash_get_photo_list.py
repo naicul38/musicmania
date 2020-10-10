@@ -8,6 +8,25 @@ warnings.filterwarnings("ignore")
 url = "https://api.unsplash.com/search/photos"
 token = "t5GZOpzhUDfF9Br8aNl1AgSSRxvnI3pIQe3RKpgI6Zw"
 
+javascript = """
+function changeImage() {
+    imageHead.style.backgroundImage = "url(" + Object.values(images)[i].url + ")";
+    var author = Object.values(images)[i].name;
+    document.getElementById("authorname").innerHTML = author;
+    i = i + 1;
+    if (i == images.length) {
+        i = 0;
+    }
+}
+
+function getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
+}
+var imageHead = document.getElementById("bg");
+var i = getRandomInt(images.length);
+changeImage();
+setInterval(changeImage, 15000);"""
+
 photo_list = []
 
 headers = {
@@ -33,8 +52,8 @@ if status_code == 200:
     for photo in photos['results']:
         photo_list.append({photo["urls"]["regular"]:photo["user"]["name"]})
 
-    f = open("./photo_list.json", "w")
-    f.write(f"{json.dumps(photo_list)}")
+    f = open("./photo-author-slider.js", "w")
+    f.write(f" var images = {json.dumps(photo_list)};"+javascript)
     f.close()
 else:
     print(f"Non-200 status code:{status_code}. Error: {r.content}. Exception: {exc}")

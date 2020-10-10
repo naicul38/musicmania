@@ -28,7 +28,6 @@ function loadStream(index) {
     music.src = sources[index];
     music.load();
     music.play();
-    setLabel(index);
     pauseIcon();
     playingIndex = index;
     playing = true;
@@ -45,9 +44,9 @@ function changePlayback() {
     if (playing) { destroyStream(); } else { loadStream(playingIndex); }
 }
 
-function setLabel(index) {
-    document.getElementById("label").innerHTML = '<h6> <a target="_blank" href="' + labels[index][1] + '">' + labels[index][0] + '</a></h6>';
-}
+// function setLabel(index) {
+//     document.getElementById("label").innerHTML = '<h6> <a target="_blank" href="' + labels[index][1] + '">' + labels[index][0] + '</a></h6>';
+// }
 
 document.onkeydown = function(e) {
     e = e || window.event;
