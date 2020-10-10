@@ -246,7 +246,7 @@ button:active {
 }
 
 #button4 {
-    font-family: cabin_sketchregular
+    font-family: a_alloy_inkregular
 }
 
 
@@ -1184,6 +1184,20 @@ nav {
 @font-face {
     font-family: 'piedraregular';
     src: url('../fonts/piedra-regular-webfont.woff2') format('woff2'), url('../fonts/piedra-regular-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'a_alloy_inkregular';
+    src: url('../fonts/alloyink-nrlyo-webfont.woff2') format('woff2'), url('../fonts/alloyink-nrlyo-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'a_alloy_inkregular';
+    src: url('../fonts/alloyink-lgdww-webfont.woff2') format('woff2'), url('../fonts/alloyink-lgdww-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
