@@ -427,7 +427,7 @@ button:active {
 }
 
 
-/* Overlay */
+/* Overlay
 
 @-moz-keyframes overlay {
     0% {
@@ -481,7 +481,7 @@ button:active {
     position: fixed;
     top: 0;
     width: 100%;
-}
+} */
 
 
 /* Main */
