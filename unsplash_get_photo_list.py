@@ -42,7 +42,7 @@ params = {
     'client_id': f'{token}',
     'order_by': 'relevant',
     'per_page': 40,
-    'query': 'cool',
+    'query': 'art',
     'page': 1,
     'orientation': 'landscape'
 }
