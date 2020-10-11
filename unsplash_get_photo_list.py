@@ -41,7 +41,8 @@ params = {
     'order_by': 'popular',
     'per_page': 40,
     'query': 'hot',
-    'page': 1
+    'page': 1,
+    'orientation':'landscape'
 }
 try:
     r = req.get(url, headers=headers, params=params, verify=False)
