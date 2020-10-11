@@ -1,5 +1,4 @@
 #!/home/lucianb/env/bin/python
-#!/usr/bin/python3.8
 import requests as req
 import warnings
 import json
@@ -9,12 +8,11 @@ warnings.filterwarnings("ignore")
 url = "https://api.unsplash.com/search/photos"
 token = "t5GZOpzhUDfF9Br8aNl1AgSSRxvnI3pIQe3RKpgI6Zw"
 
-javascript1 = """function changeImage() {
+javascript1 = """
+function changeImage() {
     imageHead.style.backgroundImage = "url(" + Object.values(images)[i].url + ")";
     var author = Object.values(images)[i].name;
-    var author_url = Object.values(images)[i].author_url;
     document.getElementById("authorname").innerHTML = author;
-    document.getElementById("authorname").href = author_url;
     i = i + 1;
     if (i == images.length) {
         i = 0;
@@ -25,7 +23,7 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 var imageHead = document.getElementById("bg");
-var images """
+var images ="""
 
 javascript2 = """var i = getRandomInt(images.length);
 changeImage();
@@ -44,7 +42,7 @@ params = {
     'per_page': 40,
     'query': 'hot',
     'page': 1,
-    'orientation': 'landscape'
+    'orientation':'landscape'
 }
 try:
     r = req.get(url, headers=headers, params=params, verify=False)
@@ -55,11 +53,10 @@ except Exception as exc:
 if status_code == 200:
     photos = json.loads(r.text)
     for photo in photos['results']:
-        photo_list.append({'url': photo["urls"]["regular"], 'name': photo["user"]["name"],
-                           'author_url': photo["user"]["links"]['html']})
+        photo_list.append({'url':photo["urls"]["regular"],'name':photo["user"]["name"],'author_url'})
 
-    f = open("./photo-author-slider.js", "w")
-    f.write(javascript1 + f"{json.dumps(photo_list)};" + javascript2)
+    f = open("photo-author-slider.js", "w")
+    f.write(javascript1 +f"{json.dumps(photo_list)};"+ javascript2)
     f.close()
 else:
     print(f"Non-200 status code:{status_code}. Error: {r.content}. Exception: {exc}")
