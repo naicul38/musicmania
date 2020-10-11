@@ -1,4 +1,4 @@
-#!/usr/bin/python3.8
+#!/home/lucianb/env/bin/python
 import requests as req
 import warnings
 import json
@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore")
 url = "https://api.unsplash.com/search/photos"
 token = "t5GZOpzhUDfF9Br8aNl1AgSSRxvnI3pIQe3RKpgI6Zw"
 
-javascript = """
+javascript1 = """
 function changeImage() {
     imageHead.style.backgroundImage = "url(" + Object.values(images)[i].url + ")";
     var author = Object.values(images)[i].name;
@@ -23,7 +23,9 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
 }
 var imageHead = document.getElementById("bg");
-var i = getRandomInt(images.length);
+var images ="""
+
+javascript2 = """var i = getRandomInt(images.length);
 changeImage();
 setInterval(changeImage, 15000);"""
 
@@ -50,10 +52,10 @@ except Exception as exc:
 if status_code == 200:
     photos = json.loads(r.text)
     for photo in photos['results']:
-        photo_list.append({photo["urls"]["regular"]:photo["user"]["name"]})
+        photo_list.append({'url':photo["urls"]["regular"],'name':photo["user"]["name"]})
 
-    f = open("./photo-author-slider.js", "w")
-    f.write(f" var images = {json.dumps(photo_list)};"+javascript)
+    f = open("photo-author-slider.js", "w")
+    f.write(javascript1 +f"{json.dumps(photo_list)};"+ javascript2)
     f.close()
 else:
     print(f"Non-200 status code:{status_code}. Error: {r.content}. Exception: {exc}")
