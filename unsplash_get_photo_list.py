@@ -53,7 +53,7 @@ except Exception as exc:
 if status_code == 200:
     photos = json.loads(r.text)
     for photo in photos['results']:
-        photo_list.append({'url':photo["urls"]["regular"],'name':photo["user"]["name"]})
+        photo_list.append({'url':photo["urls"]["regular"],'name':photo["user"]["name"],'author_url':photo})
 
     f = open("photo-author-slider.js", "w")
     f.write(javascript1 +f"{json.dumps(photo_list)};"+ javascript2)

@@ -1,15 +1,9 @@
 var sources = [
     "https://us4.internet-radio.com/proxy/wsjf?mp=/stream", // jazz
-    "http://198.178.123.17:10922/;stream/1", // Coolies
-    "https://us5.internet-radio.com/proxy/wcrr?mp=/stream;", // Classic Rock
-    "http://pulseedm.cdnstream1.com:8124/1373_128" // EDM
-];
-
-var labels = [
-    ["Lounge", "http://www.smoothjazzflorida.com/"],
-    ["70s", "http://70sradiohits.com/"],
-    ["Rock", "http://www.ClassicRockRadio.online"],
-    ["Party", "https://www.internet-radio.com/station/edmpulse/"]
+    "https://uk3.internet-radio.com/proxy/majesticjukebox?mp=/live", // Cool
+    "https://ice7.securenetsystems.net/KMXE", // Classic Rock
+    "https://uk2.internet-radio.com/proxy/danceradiouk?mp=/stream;", // EDM
+    "https://edge4.peta.live365.net/b05055_128mp3" // Chill
 ];
 
 var playingIndex = 0; // current radio
