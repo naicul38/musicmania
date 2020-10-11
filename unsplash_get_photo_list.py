@@ -40,7 +40,7 @@ headers = {
 
 params = {
     'client_id': f'{token}',
-    'order_by': 'popular',
+    'order_by': 'relevant',
     'per_page': 40,
     'query': 'hot',
     'page': 1,
