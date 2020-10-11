@@ -58,7 +58,7 @@ if status_code == 200:
         photo_list.append({'url': photo["urls"]["regular"], 'name': photo["user"]["name"],
                            'author_url': photo["user"]["links"]['html']})
 
-    f = open("/var/www/musicmania/photo-author-slider.js", "w")
+    f = open("./photo-author-slider.js", "w")
     f.write(javascript1 + f"{json.dumps(photo_list)};" + javascript2)
     f.close()
 else:
