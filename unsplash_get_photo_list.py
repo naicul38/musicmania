@@ -2,11 +2,17 @@
 import requests as req
 import warnings
 import json
+import sys
 
 warnings.filterwarnings("ignore")
 
 url = "https://api.unsplash.com/search/photos"
 token = "t5GZOpzhUDfF9Br8aNl1AgSSRxvnI3pIQe3RKpgI6Zw"
+query = "hot"
+try:
+    query = sys.argv[1]
+except:
+    pass
 
 javascript1 = """function changeImage() {
     imageHead.style.backgroundImage = "url(" + Object.values(images)[i].url + ")";
@@ -42,7 +48,7 @@ params = {
     'client_id': f'{token}',
     'order_by': 'relevant',
     'per_page': 40,
-    'query': 'art',
+    'query': f'{query}',
     'page': 1,
     'orientation': 'landscape'
 }
