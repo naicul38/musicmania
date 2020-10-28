@@ -22,11 +22,9 @@ function loadStream(index) {
     music.src = sources[index];
     music.load();
     music.play();
-    music.volume = ($("#volume-bar").val() / 100); //changed line
     pauseIcon();
     playingIndex = index;
     playing = true;
-    getUrlMetadata(sources[index]);
 }
 
 function destroyStream() {
@@ -60,22 +58,22 @@ function playIcon() {
 
 
 
-function getUrlMetadata(uri) {
-    var html = "";
-    $('button').click(function() {
-        console.log("click click");
-        $.ajax({
-            type: 'GET',
-            headers: { 'Icy-MetaData': 1 },
-            url: 'https://cors-anywhere.herokuapp.com/' + uri
-        }).done(function(data) {
-            var mdesc = $(data).filter('meta[name="description"]').attr("content");
-            var mauthor = $(data).filter('meta[name="author"]').attr("content");
-            var mkeywords = $(data).filter('meta[name="keywords"]').attr("content");
-            var metaint = $(data).filter('meta[name="icy-metaint"]').attr("icy-metadata");
-            console.log("Works!", data);
-            console.log(metaint)
-            console.log(mdesc, mauthor, mkeywords);
-        });
-    });
-}
+// function getUrlMetadata(uri) {
+//     var html = "";
+//     $('button').click(function() {
+//         console.log("click click");
+//         $.ajax({
+//             type: 'GET',
+//             headers: { 'Icy-MetaData': 1 },
+//             url: 'https://cors-anywhere.herokuapp.com/' + uri
+//         }).done(function(data) {
+//             var mdesc = $(data).filter('meta[name="description"]').attr("content");
+//             var mauthor = $(data).filter('meta[name="author"]').attr("content");
+//             var mkeywords = $(data).filter('meta[name="keywords"]').attr("content");
+//             var metaint = $(data).filter('meta[name="icy-metaint"]').attr("icy-metadata");
+//             console.log("Works!", data);
+//             console.log(metaint)
+//             console.log(mdesc, mauthor, mkeywords);
+//         });
+//     });
+// }
