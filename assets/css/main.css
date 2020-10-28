@@ -253,6 +253,33 @@ button:active {
     font-size: 25px;
 }
 
+#button6 {
+    font-family: Arial, Helvetica, sans-serif;
+    color: red;
+    font-size: 25px;
+}
+
+#button6:hover {
+    top: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: maroon;
+}
+
+#button6:focus,
+#button6:active {
+    top: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: 20px;
+    color: maroon;
+    box-shadow: none!important;
+    outline: none!important;
+}
+
 #authorname {
     -moz-animation: nav-icons 0.5s ease-in-out forwards;
     -webkit-animation: nav-icons 0.5s ease-in-out forwards;

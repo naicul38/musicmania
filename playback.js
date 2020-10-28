@@ -22,9 +22,11 @@ function loadStream(index) {
     music.src = sources[index];
     music.load();
     music.play();
+    music.volume = ($("#volume-bar").val() / 100); //changed line
     pauseIcon();
     playingIndex = index;
     playing = true;
+    getUrlMetadata(sources[index]);
 }
 
 function destroyStream() {
@@ -37,10 +39,6 @@ function destroyStream() {
 function changePlayback() {
     if (playing) { destroyStream(); } else { loadStream(playingIndex); }
 }
-
-// function setLabel(index) {
-//     document.getElementById("label").innerHTML = '<h6> <a target="_blank" href="' + labels[index][1] + '">' + labels[index][0] + '</a></h6>';
-// }
 
 document.onkeydown = function(e) {
     e = e || window.event;
@@ -58,4 +56,26 @@ function pauseIcon() {
 
 function playIcon() {
     document.getElementById('playbackButton').className = 'icon fa-play';
+}
+
+
+
+function getUrlMetadata(uri) {
+    var html = "";
+    $('button').click(function() {
+        console.log("click click");
+        $.ajax({
+            type: 'GET',
+            headers: { 'Icy-MetaData': 1 },
+            url: 'https://cors-anywhere.herokuapp.com/' + uri
+        }).done(function(data) {
+            var mdesc = $(data).filter('meta[name="description"]').attr("content");
+            var mauthor = $(data).filter('meta[name="author"]').attr("content");
+            var mkeywords = $(data).filter('meta[name="keywords"]').attr("content");
+            var metaint = $(data).filter('meta[name="icy-metaint"]').attr("icy-metadata");
+            console.log("Works!", data);
+            console.log(metaint)
+            console.log(mdesc, mauthor, mkeywords);
+        });
+    });
 }
