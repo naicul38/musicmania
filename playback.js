@@ -6,6 +6,15 @@ var sources = [
     "https://edge4.peta.live365.net/b05055_128mp3" // Chill
 ];
 
+// icons
+function pauseIcon() {
+    document.getElementById('playbackButton').className = 'icon fa-pause';
+}
+
+function playIcon() {
+    document.getElementById('playbackButton').className = 'icon fa-play';
+}
+
 var playingIndex = 0; // current radio
 var playing = false; // stream status
 var music = null;
@@ -48,14 +57,7 @@ document.onkeydown = function(e) {
     }
 };
 
-// icons
-function pauseIcon() {
-    document.getElementById('playbackButton').className = 'icon fa-pause';
-}
 
-function playIcon() {
-    document.getElementById('playbackButton').className = 'icon fa-play';
-}
 
 
 
