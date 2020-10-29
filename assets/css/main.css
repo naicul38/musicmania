@@ -256,9 +256,15 @@ button:active {
 #button6 {
     position: absolute;
     height: 40px;
-    width: 100%;
+    width: 70px;
+    margin-top: 10px;
+    margin-right: 10px;
     opacity: 1;
+    padding: 0;
+    border: 0;
     filter: grayscale(100%);
+    text-align: right;
+    right: 2px;
 }
 
 #button6:hover {
@@ -271,16 +277,12 @@ button:active {
 }
 
 .live img {
+    height: 40px;
     width: 70px;
     height: 100%;
-    vertical-align: top;
-    text-align: right;
-    margin-right: 90px;
-    margin-top: 10px;
+    margin-left: 0;
     padding: 0;
     border: none;
-    text-align: right;
-    line-height: 2.5em;
 }
 
 #authorname {
