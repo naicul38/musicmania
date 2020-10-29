@@ -7,8 +7,9 @@ var sources = [
 ];
 
 var playingIndex = 0; // current radio
-var playing = true; // stream status
+var playing = false; // stream status
 var music = null;
+playIcon();
 
 setTimeout(function() {
     loadStream(playingIndex);

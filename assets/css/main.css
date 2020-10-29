@@ -258,6 +258,16 @@ button:active {
     height: 40px;
     width: 100%;
     opacity: 1;
+    filter: grayscale(100%);
+}
+
+#button6:hover {
+    filter: grayscale(50%);
+}
+
+#button6:active,
+#button6:focus {
+    filter: saturate(100%)
 }
 
 .live img {
@@ -265,20 +275,12 @@ button:active {
     height: 100%;
     vertical-align: top;
     text-align: right;
-    margin-right: 85px;
+    margin-right: 90px;
     margin-top: 10px;
     padding: 0;
     border: none;
-<<<<<<< HEAD
-    background: none;
-    font-size: 25px;
-    color: maroon;
-    box-shadow: none!important;
-    outline: none!important;
-=======
     text-align: right;
     line-height: 2.5em;
->>>>>>> fixed
 }
 
 #authorname {
@@ -679,7 +681,6 @@ nav {
     position: absolute;
     bottom: 1%;
     left: 2%;
-    vertical-align: bottom;
     text-align: left;
     display: block;
     font-size: 1.75em;
