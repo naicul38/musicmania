@@ -361,7 +361,7 @@
                     animation: nav-icons 0.5s ease-in-out forwards;
                     position: absolute;
                     bottom: 1%;
-                    right: 2%;
+                    right: 7%;
                     vertical-align: bottom;
                     text-align: right;
                     line-height: 2.5em;
@@ -372,10 +372,9 @@
                     border: none;
                 }
                 
-                .fb-customerchat {
+                .fb-customerchat .fb_invisible_flow .fb_iframe_widget {
                     right: 0;
                     bottom: 0;
-                    margin-bottom: 100px;
                 }
                 
                 #authorname:hover {
