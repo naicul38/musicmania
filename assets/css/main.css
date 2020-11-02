@@ -372,17 +372,10 @@
                     border: none;
                 }
                 
-                #fb-root {
-                    position: absolute;
-                    bottom: 1%;
-                    right: 2%;
-                    vertical-align: bottom;
-                    text-align: right;
-                    line-height: 2.5em;
-                    font-size: 20px;
-                    margin: 0;
-                    padding: 0;
-                    border: none;
+                .fb-customerchat {
+                    right: 0;
+                    bottom: 0;
+                    margin-bottom: 100px;
                 }
                 
                 #authorname:hover {
