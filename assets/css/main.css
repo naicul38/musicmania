@@ -278,6 +278,7 @@
                     border: none;
                     margin-right: 75px;
                     z-index: 9999;
+                    display: none;
                 }
                 
                 @media only screen and (max-width: 500px) {
@@ -314,6 +315,15 @@
                 #button6:active,
                 #button6:focus {
                     filter: saturate(100%);
+                    display: block;
+                }
+                
+                #button6:hover~#signuplink {
+                    display: block;
+                }
+                
+                #button6:active~#signuplink,
+                #button6:focus~#signuplink {
                     display: block;
                 }
                 
@@ -599,7 +609,7 @@
                     background-size: cover;
                     backface-visibility: hidden;
                     background-repeat: no-repeat;
-                    background-image: url('./images/eric-nopanen-8e0EHPUx3Mo-unsplash.jpg');
+                    background-image: url('./images/markus-spiske-hU9gx8YfVK4-unsplash.jpg');
                     width: 100%;
                     height: 100%;
                 }
