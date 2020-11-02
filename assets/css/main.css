@@ -260,13 +260,61 @@
                     right: 2px;
                 }
                 
+                #signuplink {
+                    -moz-animation: nav-icons 0.5s ease-in-out forwards;
+                    -webkit-animation: nav-icons 0.5s ease-in-out forwards;
+                    -ms-animation: nav-icons 0.5s ease-in-out forwards;
+                    animation: nav-icons 0.5s ease-in-out forwards;
+                    position: absolute;
+                    top: 0%;
+                    right: 2%;
+                    vertical-align: top;
+                    text-align: right;
+                    line-height: 2.5em;
+                    font-family: -apple-system, BlinkMacSystemFont, San Francisco, Helvetica Neue, Helvetica, Ubuntu, Roboto, Noto, Segoe UI, Arial, sans-serif;
+                    font-size: 20px;
+                    margin: 0;
+                    padding: 0;
+                    border: none;
+                    margin-right: 75px;
+                    z-index: 9999;
+                }
+                
+                @media only screen and (max-width: 500px) {
+                    #signuplink {
+                        -moz-animation: nav-icons 0.5s ease-in-out forwards;
+                        -webkit-animation: nav-icons 0.5s ease-in-out forwards;
+                        -ms-animation: nav-icons 0.5s ease-in-out forwards;
+                        animation: nav-icons 0.5s ease-in-out forwards;
+                        position: absolute;
+                        top: 0%;
+                        left: 2%;
+                        vertical-align: top;
+                        text-align: left;
+                        line-height: 2.5em;
+                        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+                        font-size: 20px;
+                        margin-top: 80px;
+                        padding: 0;
+                        border: none;
+                        z-index: 9999;
+                    }
+                }
+                
+                #signupword {
+                    text-decoration: underline;
+                    color: red;
+                }
+                
                 #button6:hover {
                     filter: grayscale(50%);
+                    display: block;
                 }
                 
                 #button6:active,
                 #button6:focus {
-                    filter: saturate(100%)
+                    filter: saturate(100%);
+                    display: block;
                 }
                 
                 .live img {
