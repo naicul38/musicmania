@@ -317,15 +317,14 @@
                     filter: saturate(100%);
                     display: block;
                 }
-                
-                #button6:hover~#signuplink {
+                /* #button6:hover~#signuplink {
                     display: block;
                 }
                 
                 #button6:active~#signuplink,
                 #button6:focus~#signuplink {
                     display: block;
-                }
+                } */
                 
                 .live img {
                     height: 40px;
@@ -341,7 +340,7 @@
                         position: absolute;
                         height: 40px;
                         width: 70px;
-                        margin-top: 45px;
+                        margin-top: 47px;
                         margin-right: 1px;
                         opacity: 1;
                         padding: 0;
@@ -351,6 +350,28 @@
                         left: 2px;
                         margin-left: 5px;
                         /* transform: rotate(90deg); */
+                    }
+                    #authorname {
+                        -moz-animation: nav-icons 0.5s ease-in-out forwards;
+                        -webkit-animation: nav-icons 0.5s ease-in-out forwards;
+                        -ms-animation: nav-icons 0.5s ease-in-out forwards;
+                        animation: nav-icons 0.5s ease-in-out forwards;
+                        position: absolute;
+                        bottom: 1%;
+                        right: 7%;
+                        vertical-align: bottom;
+                        text-align: right;
+                        line-height: 2.5em;
+                        font-family: -apple-system, BlinkMacSystemFont, San Francisco, Helvetica Neue, Helvetica, Ubuntu, Roboto, Noto, Segoe UI, Arial, sans-serif;
+                        font-size: 20px;
+                        margin: 0;
+                        padding: 0;
+                        border: none;
+                        transform: rotate(-180deg);
+                        -webkit-transform: rotate(-180deg);
+                        -moz-transform: rotate(-180deg);
+                        -o-transform: rotate(-180deg);
+                        writing-mode: rl-bt;
                     }
                 }
                 
@@ -370,11 +391,6 @@
                     margin: 0;
                     padding: 0;
                     border: none;
-                }
-                
-                .fb-customerchat .fb_invisible_flow .fb_iframe_widget {
-                    right: 0;
-                    bottom: 0;
                 }
                 
                 #authorname:hover {
