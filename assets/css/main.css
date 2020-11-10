@@ -278,7 +278,7 @@
                     border: none;
                     margin-right: 75px;
                     z-index: 9999;
-                    display: none;
+                    display: block;
                 }
                 
                 @media only screen and (max-width: 500px) {
