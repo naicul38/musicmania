@@ -204,15 +204,13 @@ button {
 }
 
 /* --------------------------------------------------------------------------
-   Floppy Disk Grid
+   Floppy Disk Stack (Overlapping)
    -------------------------------------------------------------------------- */
 
-.floppy-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--space-md);
-    max-width: 600px;
+.floppy-stack {
+    position: relative;
+    width: 200px;
+    height: 320px;
 }
 
 /* --------------------------------------------------------------------------
@@ -223,104 +221,106 @@ button {
     --disk-color: #333;
     --label-bg: #fff;
     
-    width: 100px;
-    height: 100px;
+    width: 180px;
+    height: 180px;
     background: var(--disk-color);
-    border-radius: 6px;
-    position: relative;
+    border-radius: 8px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
     transition: 
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast);
+        transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 0.3s ease,
+        z-index 0s;
     box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.15),
-        0 2px 4px rgba(0, 0, 0, 0.1);
+        0 4px 16px rgba(0, 0, 0, 0.2),
+        0 2px 6px rgba(0, 0, 0, 0.15);
 }
 
+/* Stack positioning - fan out slightly */
+.floppy:nth-child(1) { top: 0; z-index: 5; transform: translateX(-50%) rotate(-8deg); }
+.floppy:nth-child(2) { top: 30px; z-index: 4; transform: translateX(-50%) rotate(-4deg); }
+.floppy:nth-child(3) { top: 60px; z-index: 3; transform: translateX(-50%) rotate(0deg); }
+.floppy:nth-child(4) { top: 90px; z-index: 2; transform: translateX(-50%) rotate(4deg); }
+.floppy:nth-child(5) { top: 120px; z-index: 1; transform: translateX(-50%) rotate(8deg); }
+
 .floppy:hover {
-    transform: translateY(-4px) scale(1.02);
+    z-index: 10 !important;
+    transform: translateX(-50%) translateY(-20px) rotate(0deg) scale(1.08);
     box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.2),
-        0 4px 8px rgba(0, 0, 0, 0.1);
+        0 20px 40px rgba(0, 0, 0, 0.3),
+        0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .floppy:active {
-    transform: translateY(2px) scale(0.98);
+    transform: translateX(-50%) translateY(-10px) rotate(0deg) scale(1.02);
 }
 
 .floppy.active {
+    z-index: 10 !important;
+    transform: translateX(-50%) translateY(-30px) rotate(0deg) scale(1.1);
     box-shadow: 
-        0 0 0 3px var(--primary),
-        0 0 30px var(--disk-shadow),
-        0 8px 24px rgba(0, 0, 0, 0.2);
-    transform: scale(1.05);
+        0 0 0 4px var(--primary),
+        0 0 50px var(--disk-shadow),
+        0 24px 48px rgba(0, 0, 0, 0.25);
 }
 
 /* Metal slider at top */
 .floppy__slider {
     position: absolute;
-    top: 6px;
+    top: 12px;
     left: 50%;
     transform: translateX(-50%);
-    width: 50px;
-    height: 12px;
-    background: linear-gradient(180deg, #C0C0C0 0%, #888 50%, #A0A0A0 100%);
-    border-radius: 2px;
-    box-shadow: inset 0 1px 0 rgba(255,255,255,0.5);
+    width: 90px;
+    height: 20px;
+    background: linear-gradient(180deg, #D0D0D0 0%, #888 50%, #A8A8A8 100%);
+    border-radius: 3px;
+    box-shadow: inset 0 2px 0 rgba(255,255,255,0.6);
 }
 
 .floppy__slider::after {
     content: '';
     position: absolute;
-    right: 4px;
-    top: 3px;
-    width: 16px;
-    height: 6px;
-    background: #666;
-    border-radius: 1px;
+    right: 8px;
+    top: 5px;
+    width: 28px;
+    height: 10px;
+    background: #555;
+    border-radius: 2px;
 }
 
 /* Label area */
 .floppy__label {
     position: absolute;
-    top: 24px;
-    left: 8px;
-    right: 8px;
-    bottom: 24px;
+    top: 40px;
+    left: 14px;
+    right: 14px;
+    bottom: 40px;
     background: var(--label-bg);
-    border-radius: 2px;
+    border-radius: 3px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4px;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .floppy__label-text {
     font-family: var(--font-display);
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
     color: var(--disk-color);
-}
-
-.floppy__label-sub {
-    font-size: 0.5rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #888;
-    margin-top: 2px;
 }
 
 /* Hole cutout at bottom */
 .floppy__hole {
     position: absolute;
-    bottom: 8px;
+    bottom: 14px;
     left: 50%;
     transform: translateX(-50%);
-    width: 20px;
-    height: 8px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 4px;
+    width: 36px;
+    height: 14px;
+    background: rgba(0,0,0,0.35);
+    border-radius: 7px;
 }
 
 /* --------------------------------------------------------------------------
@@ -483,76 +483,99 @@ button {
 
 /* Tablet and up */
 @media (min-width: 640px) {
-    .floppy {
-        width: 120px;
-        height: 120px;
+    .floppy-stack {
+        width: 260px;
+        height: 400px;
     }
     
+    .floppy {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .floppy:nth-child(1) { top: 0; }
+    .floppy:nth-child(2) { top: 40px; }
+    .floppy:nth-child(3) { top: 80px; }
+    .floppy:nth-child(4) { top: 120px; }
+    .floppy:nth-child(5) { top: 160px; }
+    
     .floppy__slider {
-        width: 60px;
-        height: 14px;
-        top: 8px;
+        width: 110px;
+        height: 24px;
+        top: 14px;
+    }
+    
+    .floppy__slider::after {
+        width: 36px;
+        height: 12px;
+        right: 10px;
+        top: 6px;
     }
     
     .floppy__label {
-        top: 28px;
-        left: 10px;
-        right: 10px;
-        bottom: 28px;
+        top: 48px;
+        left: 18px;
+        right: 18px;
+        bottom: 48px;
     }
     
     .floppy__label-text {
-        font-size: 0.875rem;
-    }
-    
-    .floppy__label-sub {
-        font-size: 0.6rem;
+        font-size: 1.4rem;
     }
     
     .floppy__hole {
-        width: 24px;
-        height: 10px;
-        bottom: 10px;
-    }
-    
-    .floppy-grid {
-        gap: var(--space-lg);
+        width: 44px;
+        height: 16px;
+        bottom: 18px;
     }
 }
 
 /* Desktop */
 @media (min-width: 1024px) {
-    .floppy {
-        width: 140px;
-        height: 140px;
+    .floppy-stack {
+        width: 320px;
+        height: 480px;
     }
     
+    .floppy {
+        width: 260px;
+        height: 260px;
+    }
+    
+    .floppy:nth-child(1) { top: 0; }
+    .floppy:nth-child(2) { top: 50px; }
+    .floppy:nth-child(3) { top: 100px; }
+    .floppy:nth-child(4) { top: 150px; }
+    .floppy:nth-child(5) { top: 200px; }
+    
     .floppy__slider {
-        width: 70px;
-        height: 16px;
-        top: 10px;
+        width: 130px;
+        height: 28px;
+        top: 16px;
+    }
+    
+    .floppy__slider::after {
+        width: 44px;
+        height: 14px;
+        right: 12px;
+        top: 7px;
     }
     
     .floppy__label {
-        top: 32px;
-        left: 12px;
-        right: 12px;
-        bottom: 32px;
+        top: 56px;
+        left: 22px;
+        right: 22px;
+        bottom: 56px;
     }
     
     .floppy__label-text {
-        font-size: 1rem;
-    }
-    
-    .floppy__label-sub {
-        font-size: 0.65rem;
-        margin-top: 4px;
+        font-size: 1.75rem;
     }
     
     .floppy__hole {
-        width: 28px;
-        height: 12px;
-        bottom: 12px;
+        width: 52px;
+        height: 18px;
+        bottom: 22px;
     }
     
     .play-btn {
@@ -573,47 +596,50 @@ button {
         gap: var(--space-md);
     }
     
-    .floppy-grid {
-        gap: var(--space-sm);
+    .floppy-stack {
+        width: 160px;
+        height: 260px;
     }
     
     .floppy {
-        width: 80px;
-        height: 80px;
+        width: 140px;
+        height: 140px;
     }
     
+    .floppy:nth-child(1) { top: 0; }
+    .floppy:nth-child(2) { top: 25px; }
+    .floppy:nth-child(3) { top: 50px; }
+    .floppy:nth-child(4) { top: 75px; }
+    .floppy:nth-child(5) { top: 100px; }
+    
     .floppy__slider {
-        width: 40px;
-        height: 10px;
-        top: 5px;
+        width: 70px;
+        height: 16px;
+        top: 10px;
     }
     
     .floppy__slider::after {
-        width: 12px;
-        height: 5px;
-        right: 3px;
-        top: 2px;
+        width: 22px;
+        height: 8px;
+        right: 6px;
+        top: 4px;
     }
     
     .floppy__label {
-        top: 18px;
-        left: 6px;
-        right: 6px;
-        bottom: 18px;
+        top: 32px;
+        left: 12px;
+        right: 12px;
+        bottom: 32px;
     }
     
     .floppy__label-text {
-        font-size: 0.6rem;
-    }
-    
-    .floppy__label-sub {
-        font-size: 0.4rem;
+        font-size: 0.9rem;
     }
     
     .floppy__hole {
-        width: 16px;
-        height: 6px;
-        bottom: 6px;
+        width: 28px;
+        height: 10px;
+        bottom: 12px;
     }
     
     .play-btn {
