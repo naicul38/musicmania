@@ -9,29 +9,36 @@
         { 
             name: 'Lounge', 
             theme: 'lounge',
+            channel: 'lush',
             url: 'https://ice1.somafm.com/lush-128-mp3'
         },
         { 
             name: 'Cool', 
             theme: 'cool',
+            channel: 'groovesalad',
             url: 'https://ice1.somafm.com/groovesalad-128-mp3'
         },
         { 
             name: 'Rock', 
             theme: 'rock',
+            channel: 'metal',
             url: 'https://ice1.somafm.com/metal-128-mp3'
         },
         { 
             name: 'Party', 
             theme: 'party',
+            channel: 'beatblender',
             url: 'https://ice1.somafm.com/beatblender-128-mp3'
         },
         { 
             name: 'Chill', 
             theme: 'chill',
+            channel: 'dronezone',
             url: 'https://ice1.somafm.com/dronezone-128-mp3'
         }
     ];
+    
+    var METADATA_UPDATE_INTERVAL = 20000; // 20 seconds
     
     // ==========================================================================
     // State
@@ -40,6 +47,8 @@
     var currentStationIndex = 0;
     var isPlaying = false;
     var audioElement = null;
+    var metadataInterval = null;
+    var currentTrack = { title: '', artist: '' };
     
     // ==========================================================================
     // DOM References (cached after init)
@@ -48,6 +57,9 @@
     var elements = {
         playBtn: null,
         stationName: null,
+        trackTitle: null,
+        trackArtist: null,
+        trackInfo: null,
         floppyDisks: null,
         html: null
     };
@@ -78,6 +90,90 @@
         
         // Update theme
         setTheme(stations[index].theme);
+    }
+    
+    // ==========================================================================
+    // Metadata Fetching (SomaFM API)
+    // ==========================================================================
+    
+    function fetchMetadata() {
+        var station = stations[currentStationIndex];
+        var apiUrl = 'https://somafm.com/songs/' + station.channel + '.json';
+        
+        fetch(apiUrl)
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(function(data) {
+                if (data && data.songs && data.songs.length > 0) {
+                    var song = data.songs[0]; // Most recent song
+                    updateTrackDisplay(song.title, song.artist);
+                }
+            })
+            .catch(function(error) {
+                console.warn('Failed to fetch metadata:', error);
+                // Don't clear display on error, keep showing last known track
+            });
+    }
+    
+    function updateTrackDisplay(title, artist) {
+        // Only update if something changed
+        if (title === currentTrack.title && artist === currentTrack.artist) {
+            return;
+        }
+        
+        currentTrack.title = title || '';
+        currentTrack.artist = artist || '';
+        
+        if (elements.trackTitle) {
+            elements.trackTitle.textContent = currentTrack.title || '—';
+            // Add animation class
+            elements.trackTitle.classList.remove('track-update');
+            void elements.trackTitle.offsetWidth; // Trigger reflow
+            elements.trackTitle.classList.add('track-update');
+        }
+        
+        if (elements.trackArtist) {
+            elements.trackArtist.textContent = currentTrack.artist;
+            elements.trackArtist.classList.remove('track-update');
+            void elements.trackArtist.offsetWidth;
+            elements.trackArtist.classList.add('track-update');
+        }
+        
+        // Update page title with now playing
+        if (isPlaying && currentTrack.title) {
+            document.title = currentTrack.title + ' - ' + stations[currentStationIndex].name + ' | Vicetream';
+        }
+    }
+    
+    function clearTrackDisplay() {
+        currentTrack = { title: '', artist: '' };
+        if (elements.trackTitle) {
+            elements.trackTitle.textContent = '—';
+        }
+        if (elements.trackArtist) {
+            elements.trackArtist.textContent = '';
+        }
+        document.title = 'Vicetream Tunes';
+    }
+    
+    function startMetadataUpdates() {
+        // Fetch immediately
+        fetchMetadata();
+        
+        // Then fetch periodically
+        if (metadataInterval) {
+            clearInterval(metadataInterval);
+        }
+        metadataInterval = setInterval(fetchMetadata, METADATA_UPDATE_INTERVAL);
+    }
+    
+    function stopMetadataUpdates() {
+        if (metadataInterval) {
+            clearInterval(metadataInterval);
+            metadataInterval = null;
+        }
     }
     
     // ==========================================================================
@@ -114,6 +210,7 @@
         audioElement.addEventListener('playing', function() {
             isPlaying = true;
             updatePlayButton(true);
+            startMetadataUpdates();
         });
         
         audioElement.addEventListener('pause', function() {
@@ -125,6 +222,7 @@
             console.warn('Stream error:', e);
             isPlaying = false;
             updatePlayButton(false);
+            stopMetadataUpdates();
         });
         
         audioElement.addEventListener('stalled', function() {
@@ -148,6 +246,8 @@
     }
     
     function stopStream() {
+        stopMetadataUpdates();
+        
         if (audioElement) {
             audioElement.pause();
             audioElement.src = '';
@@ -156,6 +256,7 @@
         }
         isPlaying = false;
         updatePlayButton(false);
+        clearTrackDisplay();
     }
     
     function togglePlayback() {
@@ -212,6 +313,15 @@
         }
     }
     
+    // Pause metadata updates when tab is hidden
+    function handleVisibilityChange() {
+        if (document.hidden) {
+            stopMetadataUpdates();
+        } else if (isPlaying) {
+            startMetadataUpdates();
+        }
+    }
+    
     // ==========================================================================
     // Initialization
     // ==========================================================================
@@ -219,6 +329,9 @@
     function cacheElements() {
         elements.playBtn = document.getElementById('playbackButton');
         elements.stationName = document.getElementById('stationName');
+        elements.trackTitle = document.getElementById('trackTitle');
+        elements.trackArtist = document.getElementById('trackArtist');
+        elements.trackInfo = document.getElementById('trackInfo');
         elements.floppyDisks = Array.from(document.querySelectorAll('.floppy'));
         elements.html = document.documentElement;
     }
@@ -241,6 +354,9 @@
         
         // Keyboard controls
         document.addEventListener('keydown', handleKeyDown);
+        
+        // Visibility change for metadata updates
+        document.addEventListener('visibilitychange', handleVisibilityChange);
     }
     
     function init() {
@@ -267,7 +383,8 @@
         loadStation: loadStation,
         togglePlayback: togglePlayback,
         getCurrentStation: function() { return currentStationIndex; },
-        isPlaying: function() { return isPlaying; }
+        isPlaying: function() { return isPlaying; },
+        getCurrentTrack: function() { return currentTrack; }
     };
     
 })();
