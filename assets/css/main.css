@@ -1,4 +1,4 @@
-                @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,900");
+                @import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;900&display=swap");
                 @import url("font-awesome.min.css");
                 /*
 	Aerial by HTML5 UP
@@ -201,6 +201,7 @@
                     background: none;
                     font-size: 20px;
                     color: white;
+                    cursor: pointer;
                 }
                 
                 button:hover {
@@ -474,15 +475,15 @@
                 
                 #bg {
                     background-position: center center;
-                    -webkit-background-size: cover;
-                    -moz-background-size: cover;
-                    -o-background-size: cover;
                     background-size: cover;
                     backface-visibility: hidden;
                     background-repeat: no-repeat;
-                    background-image: url('./images/adrian-korte-5gn2soeAc40-unsplash.jpg');
+                    background-color: #1a1a2e;
                     width: 100%;
                     height: 100%;
+                    will-change: background-image;
+                    transition: background-image 0.5s ease-in-out;
+                    contain: strict;
                 }
                 
                 .animation-fade-out {
@@ -1232,6 +1233,7 @@
                     src: url('../fonts/dancingscript-variablefont_wght-webfont.woff2') format('woff2'), url('../fonts/dancingscript-variablefont_wght-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1239,6 +1241,7 @@
                     src: url('../fonts/indieflower-regular-webfont.woff2') format('woff2'), url('../fonts/indieflower-regular-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1246,6 +1249,7 @@
                     src: url('../fonts/permanentmarker-regular-webfont.woff2') format('woff2'), url('../fonts/permanentmarker-regular-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1253,6 +1257,7 @@
                     src: url('../fonts/cabinsketch-regular-webfont.woff2') format('woff2'), url('../fonts/cabinsketch-regular-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1260,6 +1265,7 @@
                     src: url('../fonts/cabinsketch-bold-webfont.woff2') format('woff2'), url('../fonts/cabinsketch-bold-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1267,6 +1273,7 @@
                     src: url('../fonts/schoolbell-regular-webfont.woff2') format('woff2'), url('../fonts/schoolbell-regular-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1274,6 +1281,7 @@
                     src: url('../fonts/piedra-regular-webfont.woff2') format('woff2'), url('../fonts/piedra-regular-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1281,6 +1289,7 @@
                     src: url('../fonts/alloyink-nrlyo-webfont.woff2') format('woff2'), url('../fonts/alloyink-nrlyo-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }
                 
                 @font-face {
@@ -1288,4 +1297,5 @@
                     src: url('../fonts/alloyink-lgdww-webfont.woff2') format('woff2'), url('../fonts/alloyink-lgdww-webfont.woff') format('woff');
                     font-weight: normal;
                     font-style: normal;
+                    font-display: swap;
                 }

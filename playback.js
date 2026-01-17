@@ -1,82 +1,144 @@
-var sources = [
-    "https://us4.internet-radio.com/proxy/wsjf?mp=/stream", // jazz
-    "https://uk3.internet-radio.com/proxy/majesticjukebox?mp=/live", // Cool
-    "https://ice7.securenetsystems.net/KMXE", // Classic Rock
-    "https://uk2.internet-radio.com/proxy/danceradiouk?mp=/stream;", // EDM
-    "https://edge4.peta.live365.net/b05055_128mp3" // Chill
-];
-
-// icons
-function pauseIcon() {
-    document.getElementById('playbackButton').className = 'icon fa-pause';
-}
-
-function playIcon() {
-    document.getElementById('playbackButton').className = 'icon fa-play';
-}
-
-var playingIndex = 0; // current radio
-var playing = false; // stream status
-var music = null;
-playIcon();
-
-setTimeout(function() {
-    loadStream(playingIndex);
-}, 1);
-
-function loadStream(index) {
-    if (playing && music !== null)
-        destroyStream();
-
-    music = new Audio();
-    music.src = sources[index];
-    music.load();
-    music.play();
-    pauseIcon();
-    playingIndex = index;
-    playing = true;
-}
-
-function destroyStream() {
-    music.pause();
-    music.src = "";
-    playIcon();
-    playing = false;
-}
-
-function changePlayback() {
-    if (playing) { destroyStream(); } else { loadStream(playingIndex); }
-}
-
-document.onkeydown = function(e) {
-    e = e || window.event;
-    switch (e.which || e.keyCode) {
-        case 32:
-            changePlayback();
-            break;
+(function() {
+    'use strict';
+    
+    // Stream sources - SomaFM reliable streams
+    var sources = [
+        "https://ice1.somafm.com/lush-128-mp3",        // Lounge - sensuous & mellow vocals
+        "https://ice1.somafm.com/groovesalad-128-mp3", // Cool - ambient/downtempo grooves
+        "https://ice1.somafm.com/metal-128-mp3",       // Rock - heavy metal
+        "https://ice1.somafm.com/beatblender-128-mp3", // Party - electronic/dance beats
+        "https://ice1.somafm.com/dronezone-128-mp3"    // Chill - ambient/space music
+    ];
+    
+    // State
+    var playingIndex = 0;
+    var playing = false;
+    var music = null;
+    var playbackButton = null;
+    
+    // Cache DOM element reference
+    function getPlaybackButton() {
+        if (!playbackButton) {
+            playbackButton = document.getElementById('playbackButton');
+        }
+        return playbackButton;
     }
-};
-
-
-
-
-
-// function getUrlMetadata(uri) {
-//     var html = "";
-//     $('button').click(function() {
-//         console.log("click click");
-//         $.ajax({
-//             type: 'GET',
-//             headers: { 'Icy-MetaData': 1 },
-//             url: 'https://cors-anywhere.herokuapp.com/' + uri
-//         }).done(function(data) {
-//             var mdesc = $(data).filter('meta[name="description"]').attr("content");
-//             var mauthor = $(data).filter('meta[name="author"]').attr("content");
-//             var mkeywords = $(data).filter('meta[name="keywords"]').attr("content");
-//             var metaint = $(data).filter('meta[name="icy-metaint"]').attr("icy-metadata");
-//             console.log("Works!", data);
-//             console.log(metaint)
-//             console.log(mdesc, mauthor, mkeywords);
-//         });
-//     });
-// }
+    
+    // Update play/pause icon
+    function setIcon(isPlaying) {
+        var btn = getPlaybackButton();
+        if (btn) {
+            btn.className = isPlaying ? 'icon fa-pause' : 'icon fa-play';
+        }
+    }
+    
+    // Load and play a stream
+    function loadStream(index) {
+        if (index < 0 || index >= sources.length) return;
+        
+        // Clean up existing stream
+        if (music) {
+            destroyStream();
+        }
+        
+        music = new Audio();
+        music.preload = 'none'; // Don't preload until play
+        
+        // Error handling
+        music.addEventListener('error', function(e) {
+            console.warn('Stream error:', e);
+            setIcon(false);
+            playing = false;
+        });
+        
+        // Update state when playing starts
+        music.addEventListener('playing', function() {
+            setIcon(true);
+            playing = true;
+        });
+        
+        // Handle stream ending/stalling
+        music.addEventListener('stalled', function() {
+            console.warn('Stream stalled, attempting recovery...');
+        });
+        
+        music.src = sources[index];
+        playingIndex = index;
+        
+        // Modern browsers require user interaction for autoplay
+        var playPromise = music.play();
+        if (playPromise !== undefined) {
+            playPromise.then(function() {
+                setIcon(true);
+                playing = true;
+            }).catch(function(error) {
+                console.warn('Autoplay prevented:', error);
+                setIcon(false);
+                playing = false;
+            });
+        }
+    }
+    
+    // Stop and clean up stream
+    function destroyStream() {
+        if (music) {
+            music.pause();
+            music.src = '';
+            music.load(); // Reset the audio element
+        }
+        setIcon(false);
+        playing = false;
+    }
+    
+    // Toggle playback
+    function changePlayback() {
+        if (playing) {
+            destroyStream();
+        } else {
+            loadStream(playingIndex);
+        }
+    }
+    
+    // Initialize when DOM is ready
+    function init() {
+        setIcon(false);
+        
+        // Event delegation for stream buttons
+        document.addEventListener('click', function(e) {
+            var btn = e.target.closest('.stream-btn');
+            if (btn) {
+                var streamIndex = parseInt(btn.dataset.stream, 10);
+                if (!isNaN(streamIndex)) {
+                    loadStream(streamIndex);
+                }
+                return;
+            }
+            
+            // Playback button
+            if (e.target.closest('#playbackButton')) {
+                e.preventDefault();
+                changePlayback();
+            }
+        });
+        
+        // Keyboard controls
+        document.addEventListener('keydown', function(e) {
+            // Space bar to toggle playback (only if not in input)
+            if (e.code === 'Space' && !e.target.matches('input, textarea, button')) {
+                e.preventDefault();
+                changePlayback();
+            }
+        });
+    }
+    
+    // Run init when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
+    // Expose for any external needs
+    window.loadStream = loadStream;
+    window.changePlayback = changePlayback;
+})();

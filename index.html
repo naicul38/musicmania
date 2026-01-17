@@ -1,40 +1,36 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 
 <head>
     <title>Vicetream Tunes</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Stream curated radio stations - Lounge, Cool, Rock, Party, and Chill music" />
+    
+    <!-- Preconnect to external resources for faster loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://ice1.somafm.com" />
+    
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="assets/fonts/dancingscript-variablefont_wght-webfont.woff2" as="font" type="font/woff2" crossorigin />
+    
+    <!-- DNS prefetch for Facebook (loaded lazily) -->
+    <link rel="dns-prefetch" href="https://connect.facebook.net" />
+    
     <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script type="text/javascript" src="playback.js"></script>
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+    
+    <!-- Defer non-critical JavaScript -->
+    <script defer src="playback.js"></script>
+    <script defer src="photo-author-slider.js"></script>
 </head>
 
-<body class="loading" onload="startTimer()">
-    <!-- Load Facebook SDK for JavaScript -->
+<body class="loading">
+    <!-- Facebook SDK loaded lazily on user interaction -->
     <div id="fb-root"></div>
-    <script>
-        window.fbAsyncInit = function() {
-            FB.init({
-                xfbml: true,
-                version: 'v8.0'
-            });
-        };
-
-        (function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) return;
-            js = d.createElement(s);
-            js.id = id;
-            js.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-            fjs.parentNode.insertBefore(js, fjs);
-        }(document, 'script', 'facebook-jssdk'));
-    </script>
-
-    <!-- Your Chat Plugin code -->
-    <div class="fb-customerchat" attribution=setup_tool page_id="108660061046666" theme_color="#67b868" logged_in_greeting="Hello! Enjoy the music and let us know if there is anything we can do to help." logged_out_greeting="Hello! Enjoy the music and let us know if there is anything we can do to help.">
-    </div>
+    
     <div id="wrapper">
         <div id="bg"></div>
         <div id="overlay"></div>
@@ -42,18 +38,20 @@
             <!-- Header -->
             <header id="header">
                 <p>
-                    <button id="button1" onclick="loadStream(0)" style="cursor:pointer" class='target'> Lounge </button>&nbsp;&bull;&nbsp;
-                    <button id="button2" onclick="loadStream(1)" style="cursor:pointer" class='target'> Cool</button>&nbsp;&bull;&nbsp;
-                    <button id="button3" onclick="loadStream(2)" style="cursor:pointer" class='target'> Rock</button>&nbsp;&bull;&nbsp;
-                    <button id="button4" onclick="loadStream(3)" style="cursor:pointer" class='target'> Party</button>&nbsp;&bull;&nbsp;
-                    <button id="button5" onclick="loadStream(4)" style="cursor:pointer" class='target'> Chill</button>&nbsp;&bull;&nbsp;
+                    <button id="button1" data-stream="0" class="target stream-btn"> Lounge </button>&nbsp;&bull;&nbsp;
+                    <button id="button2" data-stream="1" class="target stream-btn"> Cool</button>&nbsp;&bull;&nbsp;
+                    <button id="button3" data-stream="2" class="target stream-btn"> Rock</button>&nbsp;&bull;&nbsp;
+                    <button id="button4" data-stream="3" class="target stream-btn"> Party</button>&nbsp;&bull;&nbsp;
+                    <button id="button5" data-stream="4" class="target stream-btn"> Chill</button>&nbsp;&bull;&nbsp;
                 </p>
             </header>
             <ul>
-                <li valign="top">
+                <li>
                     <div id="live" class="live">
-                        <button id="button6" onclick="loadStream(4)" style="cursor:pointer" class='live'><img src="assets/css/images/searchpng.com-live-button-png-image-free-download.png"/></button>
-                        <div id="signuplink"><a id="signupword" href="signup.html" target="_blank">Sign up</a> and book your live event</div>
+                        <button id="button6" data-stream="4" class="live stream-btn">
+                            <img src="assets/css/images/searchpng.com-live-button-png-image-free-download.png" alt="Live" width="70" height="40" loading="lazy" />
+                        </button>
+                        <div id="signuplink"><a id="signupword" href="signup.html" target="_blank" rel="noopener">Sign up</a> and book your live event</div>
                     </div>
                 </li>
             </ul>
@@ -61,26 +59,65 @@
     </div>
     <nav>
         <ul>
-            <li valign="bottom"><a id="playbackButton" href="#" class="icon fa-play" onclick="changePlayback()"><span class="label">Music</span></a></li>
+            <li><a id="playbackButton" href="#" class="icon fa-play" aria-label="Play/Pause music"><span class="label">Music</span></a></li>
         </ul>
     </nav>
-    <a id="authorname" target="_blank"></a>
+    <a id="authorname" target="_blank" rel="noopener"></a>
 
-    <div id="label">
-
-    </div>
+    <div id="label"></div>
+    
+    <!-- Lazy load Facebook SDK only when needed -->
     <script>
-        window.onload = function() {
-            document.body.className = '';
-        }
-        window.ontouchmove = function() {
-            return false;
-        }
-        window.onorientationchange = function() {
+        // Remove loading class when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.remove('loading');
+        });
+        
+        // Prevent touch scroll on mobile
+        document.addEventListener('touchmove', function(e) {
+            if (e.target === document.body) e.preventDefault();
+        }, { passive: false });
+        
+        // Handle orientation change
+        window.addEventListener('orientationchange', function() {
             document.body.scrollTop = 0;
+        });
+        
+        // Lazy load Facebook SDK on first user interaction
+        var fbLoaded = false;
+        function loadFacebookSDK() {
+            if (fbLoaded) return;
+            fbLoaded = true;
+            
+            window.fbAsyncInit = function() {
+                FB.init({
+                    xfbml: true,
+                    version: 'v18.0'
+                });
+            };
+            
+            var script = document.createElement('script');
+            script.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
+            script.async = true;
+            script.defer = true;
+            document.head.appendChild(script);
+            
+            // Create chat plugin element
+            var chatPlugin = document.createElement('div');
+            chatPlugin.className = 'fb-customerchat';
+            chatPlugin.setAttribute('attribution', 'setup_tool');
+            chatPlugin.setAttribute('page_id', '108660061046666');
+            chatPlugin.setAttribute('theme_color', '#67b868');
+            chatPlugin.setAttribute('logged_in_greeting', 'Hello! Enjoy the music and let us know if there is anything we can do to help.');
+            chatPlugin.setAttribute('logged_out_greeting', 'Hello! Enjoy the music and let us know if there is anything we can do to help.');
+            document.getElementById('fb-root').appendChild(chatPlugin);
         }
+        
+        // Load Facebook SDK after 5 seconds or on scroll/click
+        setTimeout(loadFacebookSDK, 5000);
+        document.addEventListener('scroll', loadFacebookSDK, { once: true, passive: true });
+        document.addEventListener('click', loadFacebookSDK, { once: true });
     </script>
-    <script type="text/javascript" src="photo-author-slider.js"></script>
 </body>
 
 </html>
