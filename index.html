@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en">
+<html lang="en" data-theme="lounge">
 
 <head>
     <title>Vicetream Tunes</title>
@@ -7,117 +7,103 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Stream curated radio stations - Lounge, Cool, Rock, Party, and Chill music" />
     
-    <!-- Preconnect to external resources for faster loading -->
+    <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="preconnect" href="https://ice1.somafm.com" />
     
-    <!-- Preload critical fonts -->
-    <link rel="preload" href="assets/fonts/dancingscript-variablefont_wght-webfont.woff2" as="font" type="font/woff2" crossorigin />
-    
-    <!-- DNS prefetch for Facebook (loaded lazily) -->
-    <link rel="dns-prefetch" href="https://connect.facebook.net" />
+    <!-- Google Fonts - Retro style -->
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
     
     <link rel="stylesheet" href="assets/css/main.css" />
     <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
     
-    <!-- Defer non-critical JavaScript -->
     <script defer src="playback.js"></script>
-    <script defer src="photo-author-slider.js"></script>
 </head>
 
-<body class="loading">
-    <!-- Facebook SDK loaded lazily on user interaction -->
-    <div id="fb-root"></div>
-    
-    <div id="wrapper">
-        <div id="bg"></div>
-        <div id="overlay"></div>
-        <div id="main">
-            <!-- Header -->
-            <header id="header">
-                <p>
-                    <button id="button1" data-stream="0" class="target stream-btn"> Lounge </button>&nbsp;&bull;&nbsp;
-                    <button id="button2" data-stream="1" class="target stream-btn"> Cool</button>&nbsp;&bull;&nbsp;
-                    <button id="button3" data-stream="2" class="target stream-btn"> Rock</button>&nbsp;&bull;&nbsp;
-                    <button id="button4" data-stream="3" class="target stream-btn"> Party</button>&nbsp;&bull;&nbsp;
-                    <button id="button5" data-stream="4" class="target stream-btn"> Chill</button>&nbsp;&bull;&nbsp;
-                </p>
+<body>
+    <div class="app">
+        <!-- Halftone pattern overlay -->
+        <div class="halftone-overlay"></div>
+        
+        <!-- Main content -->
+        <main class="main-content">
+            <!-- Logo -->
+            <header class="header">
+                <h1 class="logo">VICETREAM<span class="logo-accent">TUNES</span></h1>
+                <p class="tagline">Select your vibe</p>
             </header>
-            <ul>
-                <li>
-                    <div id="live" class="live">
-                        <button id="button6" data-stream="4" class="live stream-btn">
-                            <img src="assets/css/images/searchpng.com-live-button-png-image-free-download.png" alt="Live" width="70" height="40" loading="lazy" />
-                        </button>
-                        <div id="signuplink"><a id="signupword" href="signup.html" target="_blank" rel="noopener">Sign up</a> and book your live event</div>
+            
+            <!-- Floppy Disk Station Selector -->
+            <div class="floppy-grid">
+                <button class="floppy floppy--lounge active" data-stream="0" data-theme="lounge" aria-label="Lounge station">
+                    <div class="floppy__slider"></div>
+                    <div class="floppy__label">
+                        <span class="floppy__label-text">LOUNGE</span>
+                        <span class="floppy__label-sub">Mellow Vocals</span>
                     </div>
-                </li>
-            </ul>
-        </div>
+                    <div class="floppy__hole"></div>
+                </button>
+                
+                <button class="floppy floppy--cool" data-stream="1" data-theme="cool" aria-label="Cool station">
+                    <div class="floppy__slider"></div>
+                    <div class="floppy__label">
+                        <span class="floppy__label-text">COOL</span>
+                        <span class="floppy__label-sub">Downtempo</span>
+                    </div>
+                    <div class="floppy__hole"></div>
+                </button>
+                
+                <button class="floppy floppy--rock" data-stream="2" data-theme="rock" aria-label="Rock station">
+                    <div class="floppy__slider"></div>
+                    <div class="floppy__label">
+                        <span class="floppy__label-text">ROCK</span>
+                        <span class="floppy__label-sub">Heavy Metal</span>
+                    </div>
+                    <div class="floppy__hole"></div>
+                </button>
+                
+                <button class="floppy floppy--party" data-stream="3" data-theme="party" aria-label="Party station">
+                    <div class="floppy__slider"></div>
+                    <div class="floppy__label">
+                        <span class="floppy__label-text">PARTY</span>
+                        <span class="floppy__label-sub">Dance Beats</span>
+                    </div>
+                    <div class="floppy__hole"></div>
+                </button>
+                
+                <button class="floppy floppy--chill" data-stream="4" data-theme="chill" aria-label="Chill station">
+                    <div class="floppy__slider"></div>
+                    <div class="floppy__label">
+                        <span class="floppy__label-text">CHILL</span>
+                        <span class="floppy__label-sub">Ambient Space</span>
+                    </div>
+                    <div class="floppy__hole"></div>
+                </button>
+            </div>
+            
+            <!-- Now Playing -->
+            <div class="now-playing">
+                <span class="now-playing__label">NOW PLAYING</span>
+                <span class="now-playing__station" id="stationName">Lounge</span>
+            </div>
+            
+            <!-- Play/Pause Control -->
+            <button class="play-btn" id="playbackButton" aria-label="Play or pause music">
+                <svg class="play-btn__icon play-btn__icon--play" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M8 5v14l11-7z"/>
+                </svg>
+                <svg class="play-btn__icon play-btn__icon--pause" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                </svg>
+            </button>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="footer">
+            <a href="signup.html" class="footer__link" target="_blank" rel="noopener">Book a live event</a>
+        </footer>
     </div>
-    <nav>
-        <ul>
-            <li><a id="playbackButton" href="#" class="icon fa-play" aria-label="Play/Pause music"><span class="label">Music</span></a></li>
-        </ul>
-    </nav>
-    <a id="authorname" target="_blank" rel="noopener"></a>
-
-    <div id="label"></div>
-    
-    <!-- Lazy load Facebook SDK only when needed -->
-    <script>
-        // Remove loading class when DOM is ready
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.classList.remove('loading');
-        });
-        
-        // Prevent touch scroll on mobile
-        document.addEventListener('touchmove', function(e) {
-            if (e.target === document.body) e.preventDefault();
-        }, { passive: false });
-        
-        // Handle orientation change
-        window.addEventListener('orientationchange', function() {
-            document.body.scrollTop = 0;
-        });
-        
-        // Lazy load Facebook SDK on first user interaction
-        var fbLoaded = false;
-        function loadFacebookSDK() {
-            if (fbLoaded) return;
-            fbLoaded = true;
-            
-            window.fbAsyncInit = function() {
-                FB.init({
-                    xfbml: true,
-                    version: 'v18.0'
-                });
-            };
-            
-            var script = document.createElement('script');
-            script.src = 'https://connect.facebook.net/en_US/sdk/xfbml.customerchat.js';
-            script.async = true;
-            script.defer = true;
-            document.head.appendChild(script);
-            
-            // Create chat plugin element
-            var chatPlugin = document.createElement('div');
-            chatPlugin.className = 'fb-customerchat';
-            chatPlugin.setAttribute('attribution', 'setup_tool');
-            chatPlugin.setAttribute('page_id', '108660061046666');
-            chatPlugin.setAttribute('theme_color', '#67b868');
-            chatPlugin.setAttribute('logged_in_greeting', 'Hello! Enjoy the music and let us know if there is anything we can do to help.');
-            chatPlugin.setAttribute('logged_out_greeting', 'Hello! Enjoy the music and let us know if there is anything we can do to help.');
-            document.getElementById('fb-root').appendChild(chatPlugin);
-        }
-        
-        // Load Facebook SDK after 5 seconds or on scroll/click
-        setTimeout(loadFacebookSDK, 5000);
-        document.addEventListener('scroll', loadFacebookSDK, { once: true, passive: true });
-        document.addEventListener('click', loadFacebookSDK, { once: true });
-    </script>
 </body>
 
 </html>

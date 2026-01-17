@@ -1,144 +1,273 @@
 (function() {
     'use strict';
     
-    // Stream sources - SomaFM reliable streams
-    var sources = [
-        "https://ice1.somafm.com/lush-128-mp3",        // Lounge - sensuous & mellow vocals
-        "https://ice1.somafm.com/groovesalad-128-mp3", // Cool - ambient/downtempo grooves
-        "https://ice1.somafm.com/metal-128-mp3",       // Rock - heavy metal
-        "https://ice1.somafm.com/beatblender-128-mp3", // Party - electronic/dance beats
-        "https://ice1.somafm.com/dronezone-128-mp3"    // Chill - ambient/space music
+    // ==========================================================================
+    // Configuration
+    // ==========================================================================
+    
+    var stations = [
+        { 
+            name: 'Lounge', 
+            theme: 'lounge',
+            url: 'https://ice1.somafm.com/lush-128-mp3'
+        },
+        { 
+            name: 'Cool', 
+            theme: 'cool',
+            url: 'https://ice1.somafm.com/groovesalad-128-mp3'
+        },
+        { 
+            name: 'Rock', 
+            theme: 'rock',
+            url: 'https://ice1.somafm.com/metal-128-mp3'
+        },
+        { 
+            name: 'Party', 
+            theme: 'party',
+            url: 'https://ice1.somafm.com/beatblender-128-mp3'
+        },
+        { 
+            name: 'Chill', 
+            theme: 'chill',
+            url: 'https://ice1.somafm.com/dronezone-128-mp3'
+        }
     ];
     
+    // ==========================================================================
     // State
-    var playingIndex = 0;
-    var playing = false;
-    var music = null;
-    var playbackButton = null;
+    // ==========================================================================
     
-    // Cache DOM element reference
-    function getPlaybackButton() {
-        if (!playbackButton) {
-            playbackButton = document.getElementById('playbackButton');
-        }
-        return playbackButton;
+    var currentStationIndex = 0;
+    var isPlaying = false;
+    var audioElement = null;
+    
+    // ==========================================================================
+    // DOM References (cached after init)
+    // ==========================================================================
+    
+    var elements = {
+        playBtn: null,
+        stationName: null,
+        floppyDisks: null,
+        html: null
+    };
+    
+    // ==========================================================================
+    // Theme Management
+    // ==========================================================================
+    
+    function setTheme(themeName) {
+        elements.html.setAttribute('data-theme', themeName);
     }
     
-    // Update play/pause icon
-    function setIcon(isPlaying) {
-        var btn = getPlaybackButton();
-        if (btn) {
-            btn.className = isPlaying ? 'icon fa-pause' : 'icon fa-play';
+    function updateActiveState(index) {
+        // Remove active class from all disks
+        elements.floppyDisks.forEach(function(disk) {
+            disk.classList.remove('active');
+        });
+        
+        // Add active class to selected disk
+        if (elements.floppyDisks[index]) {
+            elements.floppyDisks[index].classList.add('active');
+        }
+        
+        // Update station name display
+        if (elements.stationName) {
+            elements.stationName.textContent = stations[index].name;
+        }
+        
+        // Update theme
+        setTheme(stations[index].theme);
+    }
+    
+    // ==========================================================================
+    // Audio Playback
+    // ==========================================================================
+    
+    function updatePlayButton(playing) {
+        if (elements.playBtn) {
+            if (playing) {
+                elements.playBtn.classList.add('playing');
+            } else {
+                elements.playBtn.classList.remove('playing');
+            }
         }
     }
     
-    // Load and play a stream
-    function loadStream(index) {
-        if (index < 0 || index >= sources.length) return;
+    function loadStation(index) {
+        if (index < 0 || index >= stations.length) return;
         
-        // Clean up existing stream
-        if (music) {
-            destroyStream();
+        // Stop current stream if playing
+        if (audioElement) {
+            stopStream();
         }
         
-        music = new Audio();
-        music.preload = 'none'; // Don't preload until play
+        // Update current station
+        currentStationIndex = index;
+        updateActiveState(index);
         
-        // Error handling
-        music.addEventListener('error', function(e) {
+        // Create and configure audio
+        audioElement = new Audio();
+        audioElement.preload = 'none';
+        
+        // Event handlers
+        audioElement.addEventListener('playing', function() {
+            isPlaying = true;
+            updatePlayButton(true);
+        });
+        
+        audioElement.addEventListener('pause', function() {
+            isPlaying = false;
+            updatePlayButton(false);
+        });
+        
+        audioElement.addEventListener('error', function(e) {
             console.warn('Stream error:', e);
-            setIcon(false);
-            playing = false;
+            isPlaying = false;
+            updatePlayButton(false);
         });
         
-        // Update state when playing starts
-        music.addEventListener('playing', function() {
-            setIcon(true);
-            playing = true;
+        audioElement.addEventListener('stalled', function() {
+            console.warn('Stream stalled...');
         });
         
-        // Handle stream ending/stalling
-        music.addEventListener('stalled', function() {
-            console.warn('Stream stalled, attempting recovery...');
-        });
+        // Load and play
+        audioElement.src = stations[index].url;
         
-        music.src = sources[index];
-        playingIndex = index;
-        
-        // Modern browsers require user interaction for autoplay
-        var playPromise = music.play();
+        var playPromise = audioElement.play();
         if (playPromise !== undefined) {
             playPromise.then(function() {
-                setIcon(true);
-                playing = true;
+                isPlaying = true;
+                updatePlayButton(true);
             }).catch(function(error) {
                 console.warn('Autoplay prevented:', error);
-                setIcon(false);
-                playing = false;
+                isPlaying = false;
+                updatePlayButton(false);
             });
         }
     }
     
-    // Stop and clean up stream
-    function destroyStream() {
-        if (music) {
-            music.pause();
-            music.src = '';
-            music.load(); // Reset the audio element
+    function stopStream() {
+        if (audioElement) {
+            audioElement.pause();
+            audioElement.src = '';
+            audioElement.load();
+            audioElement = null;
         }
-        setIcon(false);
-        playing = false;
+        isPlaying = false;
+        updatePlayButton(false);
     }
     
-    // Toggle playback
-    function changePlayback() {
-        if (playing) {
-            destroyStream();
+    function togglePlayback() {
+        if (isPlaying) {
+            stopStream();
         } else {
-            loadStream(playingIndex);
+            loadStation(currentStationIndex);
         }
     }
     
-    // Initialize when DOM is ready
-    function init() {
-        setIcon(false);
+    // ==========================================================================
+    // Event Handlers
+    // ==========================================================================
+    
+    function handleFloppyClick(e) {
+        var floppy = e.target.closest('.floppy');
+        if (!floppy) return;
         
-        // Event delegation for stream buttons
+        var streamIndex = parseInt(floppy.dataset.stream, 10);
+        if (!isNaN(streamIndex)) {
+            loadStation(streamIndex);
+        }
+    }
+    
+    function handlePlayButtonClick(e) {
+        e.preventDefault();
+        togglePlayback();
+    }
+    
+    function handleKeyDown(e) {
+        // Space bar to toggle playback (only if not in input)
+        if (e.code === 'Space' && !e.target.matches('input, textarea, button')) {
+            e.preventDefault();
+            togglePlayback();
+        }
+        
+        // Arrow keys to navigate stations
+        if (e.code === 'ArrowRight' || e.code === 'ArrowDown') {
+            e.preventDefault();
+            var nextIndex = (currentStationIndex + 1) % stations.length;
+            loadStation(nextIndex);
+        }
+        
+        if (e.code === 'ArrowLeft' || e.code === 'ArrowUp') {
+            e.preventDefault();
+            var prevIndex = (currentStationIndex - 1 + stations.length) % stations.length;
+            loadStation(prevIndex);
+        }
+        
+        // Number keys 1-5 for direct station selection
+        var num = parseInt(e.key, 10);
+        if (num >= 1 && num <= 5) {
+            loadStation(num - 1);
+        }
+    }
+    
+    // ==========================================================================
+    // Initialization
+    // ==========================================================================
+    
+    function cacheElements() {
+        elements.playBtn = document.getElementById('playbackButton');
+        elements.stationName = document.getElementById('stationName');
+        elements.floppyDisks = Array.from(document.querySelectorAll('.floppy'));
+        elements.html = document.documentElement;
+    }
+    
+    function bindEvents() {
+        // Floppy disk clicks
         document.addEventListener('click', function(e) {
-            var btn = e.target.closest('.stream-btn');
-            if (btn) {
-                var streamIndex = parseInt(btn.dataset.stream, 10);
-                if (!isNaN(streamIndex)) {
-                    loadStream(streamIndex);
-                }
+            // Check for floppy click
+            if (e.target.closest('.floppy')) {
+                handleFloppyClick(e);
                 return;
             }
             
-            // Playback button
+            // Check for play button click
             if (e.target.closest('#playbackButton')) {
-                e.preventDefault();
-                changePlayback();
+                handlePlayButtonClick(e);
+                return;
             }
         });
         
         // Keyboard controls
-        document.addEventListener('keydown', function(e) {
-            // Space bar to toggle playback (only if not in input)
-            if (e.code === 'Space' && !e.target.matches('input, textarea, button')) {
-                e.preventDefault();
-                changePlayback();
-            }
-        });
+        document.addEventListener('keydown', handleKeyDown);
     }
     
-    // Run init when DOM is ready
+    function init() {
+        cacheElements();
+        bindEvents();
+        
+        // Set initial state (don't autoplay, just set visual state)
+        updateActiveState(currentStationIndex);
+        updatePlayButton(false);
+    }
+    
+    // ==========================================================================
+    // Bootstrap
+    // ==========================================================================
+    
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {
         init();
     }
     
-    // Expose for any external needs
-    window.loadStream = loadStream;
-    window.changePlayback = changePlayback;
+    // Expose API for external use if needed
+    window.vicetream = {
+        loadStation: loadStation,
+        togglePlayback: togglePlayback,
+        getCurrentStation: function() { return currentStationIndex; },
+        isPlaying: function() { return isPlaying; }
+    };
+    
 })();
