@@ -104,7 +104,7 @@
    -------------------------------------------------------------------------- */
 
 *, *::before, *::after {
-    box-sizing: border-box;
+                    box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
@@ -113,9 +113,9 @@ html {
     font-size: 16px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-body {
+                }
+                
+                body {
     font-family: var(--font-body);
     background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
     color: var(--text);
@@ -273,7 +273,7 @@ button {
 
 /* Metal slider at top */
 .floppy__slider {
-    position: absolute;
+                        position: absolute;
     top: 12px;
     left: 50%;
     transform: translateX(-50%);
@@ -286,7 +286,7 @@ button {
 
 .floppy__slider::after {
     content: '';
-    position: absolute;
+                        position: absolute;
     right: 8px;
     top: 5px;
     width: 28px;
@@ -297,7 +297,7 @@ button {
 
 /* Label area */
 .floppy__label {
-    position: absolute;
+                    position: absolute;
     top: 40px;
     left: 14px;
     right: 14px;
@@ -431,7 +431,7 @@ button {
 
 /* Track update animation */
 @keyframes track-fade-in {
-    from {
+                    from {
         opacity: 0;
         transform: translateY(8px);
     }
@@ -648,33 +648,23 @@ button {
     }
     
     .floppy-stack {
-        height: 160px;
+        height: auto;
         flex-wrap: nowrap;
-        overflow-x: auto;
-        justify-content: flex-start;
-        padding: 20px;
-        margin: 0 -16px;
-        width: calc(100% + 32px);
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-    
-    .floppy-stack::-webkit-scrollbar {
-        display: none;
+        overflow: visible;
+        justify-content: center;
+        padding: 30px 10px 50px;
+        margin: 0;
+        width: 100%;
     }
     
     .floppy {
-        width: 120px;
-        height: 120px;
-        margin-left: -30px;
+        width: 90px;
+        height: 90px;
+        margin-left: -25px;
     }
     
     .floppy:first-child {
-        margin-left: 20px;
-    }
-    
-    .floppy:last-child {
-        margin-right: 20px;
+        margin-left: 0;
     }
     
     /* Reset rotation on mobile for easier scrolling */
@@ -695,33 +685,33 @@ button {
     }
     
     .floppy__slider {
-        width: 60px;
-        height: 14px;
-        top: 8px;
+        width: 45px;
+        height: 11px;
+        top: 6px;
     }
     
     .floppy__slider::after {
-        width: 20px;
-        height: 7px;
-        right: 5px;
+        width: 15px;
+        height: 5px;
+        right: 4px;
         top: 3px;
     }
     
     .floppy__label {
-        top: 28px;
-        left: 10px;
-        right: 10px;
-        bottom: 28px;
+        top: 22px;
+        left: 8px;
+        right: 8px;
+        bottom: 22px;
     }
     
     .floppy__label-text {
-        font-size: 0.8rem;
+        font-size: 0.65rem;
     }
     
     .floppy__hole {
-        width: 24px;
-        height: 9px;
-        bottom: 10px;
+        width: 18px;
+        height: 7px;
+        bottom: 8px;
     }
     
     .play-btn {
