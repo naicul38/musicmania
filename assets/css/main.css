@@ -667,21 +667,19 @@ button {
         margin-left: 0;
     }
     
-    /* Reset rotation on mobile for easier scrolling */
-    .floppy:nth-child(1),
-    .floppy:nth-child(2),
-    .floppy:nth-child(3),
-    .floppy:nth-child(4),
-    .floppy:nth-child(5) {
-        transform: rotate(0deg);
-    }
+    /* Keep fan rotation on mobile */
+    .floppy:nth-child(1) { transform: rotate(-10deg); }
+    .floppy:nth-child(2) { transform: rotate(-5deg); }
+    .floppy:nth-child(3) { transform: rotate(0deg); }
+    .floppy:nth-child(4) { transform: rotate(5deg); }
+    .floppy:nth-child(5) { transform: rotate(10deg); }
     
     .floppy:hover {
-        transform: translateY(-15px) scale(1.05);
+        transform: translateY(-15px) rotate(0deg) scale(1.05);
     }
     
     .floppy.active {
-        transform: translateY(-20px) scale(1.08);
+        transform: translateY(-20px) rotate(0deg) scale(1.1);
     }
     
     .floppy__slider {
