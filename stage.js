@@ -2,12 +2,21 @@
     'use strict';
     
     // ==========================================================================
+    // Configuration - LocalStorage keys for demo
+    // ==========================================================================
+    
+    const LIVE_STATUS_KEY = 'vicetream_live_status';
+    const LIVE_STREAM_KEY = 'vicetream_live_stream';
+    const LIVE_DJ_NAME_KEY = 'vicetream_dj_name';
+    
+    // ==========================================================================
     // DOM Elements
     // ==========================================================================
     
     const elements = {
         cameraFeed: null,
         streamAudio: null,
+        djNameInput: null,
         streamUrlInput: null,
         cameraBtn: null,
         goLiveBtn: null,
@@ -48,6 +57,7 @@
     function cacheElements() {
         elements.cameraFeed = document.getElementById('cameraFeed');
         elements.streamAudio = document.getElementById('streamAudio');
+        elements.djNameInput = document.getElementById('djNameInput');
         elements.streamUrlInput = document.getElementById('streamUrl');
         elements.cameraBtn = document.getElementById('cameraBtn');
         elements.goLiveBtn = document.getElementById('goLiveBtn');
@@ -66,7 +76,8 @@
         elements.cameraBtn?.addEventListener('click', handleCameraToggle);
         elements.goLiveBtn?.addEventListener('click', handleGoLive);
         elements.stopBtn?.addEventListener('click', handleStop);
-        elements.streamUrlInput?.addEventListener('input', handleStreamUrlChange);
+        elements.streamUrlInput?.addEventListener('input', checkGoLiveButton);
+        elements.djNameInput?.addEventListener('input', checkGoLiveButton);
         elements.errorClose?.addEventListener('click', hideError);
         
         // Audio element events
@@ -160,22 +171,25 @@
     // Stream Management
     // ==========================================================================
     
-    function handleStreamUrlChange() {
-        checkGoLiveButton();
-    }
-    
     function checkGoLiveButton() {
         const hasStreamUrl = elements.streamUrlInput?.value.trim().length > 0;
+        const hasDjName = elements.djNameInput?.value.trim().length > 0;
         const hasCamera = state.isCameraEnabled;
         
-        elements.goLiveBtn.disabled = !(hasStreamUrl && hasCamera);
+        elements.goLiveBtn.disabled = !(hasStreamUrl && hasDjName && hasCamera);
     }
     
     async function handleGoLive() {
         const streamUrl = elements.streamUrlInput?.value.trim();
+        const djName = elements.djNameInput?.value.trim();
         
         if (!streamUrl) {
             showError('Please enter a stream URL');
+            return;
+        }
+        
+        if (!djName) {
+            showError('Please enter your DJ name');
             return;
         }
         
@@ -193,6 +207,11 @@
             
             // Initialize audio visualizer
             await initAudioVisualizer();
+            
+            // Save live status (in production, this would be an API call)
+            localStorage.setItem(LIVE_STATUS_KEY, 'true');
+            localStorage.setItem(LIVE_STREAM_KEY, streamUrl);
+            localStorage.setItem(LIVE_DJ_NAME_KEY, djName);
             
             // Update UI
             state.isLive = true;
@@ -218,6 +237,11 @@
         // Disable camera
         disableCamera();
         
+        // Clear live status
+        localStorage.removeItem(LIVE_STATUS_KEY);
+        localStorage.removeItem(LIVE_STREAM_KEY);
+        localStorage.removeItem(LIVE_DJ_NAME_KEY);
+        
         // Reset UI
         state.isLive = false;
         elements.controlsPanel.classList.remove('hidden');
@@ -225,6 +249,7 @@
         elements.statusBadge.classList.remove('live');
         elements.statusText.textContent = 'OFFLINE';
         elements.streamUrlInput.value = '';
+        elements.djNameInput.value = '';
         
         checkGoLiveButton();
     }

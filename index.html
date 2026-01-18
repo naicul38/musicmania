@@ -20,6 +20,29 @@
     <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
     
     <script defer src="playback.js"></script>
+    <script defer>
+        // Check if someone is live and update ON AIR button
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateOnAirButton() {
+                const isLive = localStorage.getItem('vicetream_live_status') === 'true';
+                const onairBtn = document.querySelector('.onair-btn');
+                
+                if (onairBtn) {
+                    if (isLive) {
+                        onairBtn.classList.add('live');
+                    } else {
+                        onairBtn.classList.remove('live');
+                    }
+                }
+            }
+            
+            // Update immediately
+            updateOnAirButton();
+            
+            // Check every 5 seconds
+            setInterval(updateOnAirButton, 5000);
+        });
+    </script>
 </head>
 
 <body>

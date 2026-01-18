@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html lang="en" data-theme="party">
+
+<head>
+    <title>Broadcast Studio - Vicetream Tunes</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Broadcast your live DJ set on Vicetream Tunes" />
+    
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="stage.css" />
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+    
+    <script defer src="stage.js"></script>
+</head>
+
+<body>
+    <div class="stage-app">
+        <!-- Halftone overlay -->
+        <div class="stage-halftone"></div>
+        
+        <!-- Video Feed (Broadcaster Camera) -->
+        <video id="cameraFeed" class="camera-feed" autoplay playsinline muted></video>
+        
+        <!-- Audio Stream -->
+        <audio id="streamAudio" crossorigin="anonymous"></audio>
+        
+        <!-- Stage Overlay -->
+        <div class="stage-overlay">
+            <!-- Audio Visualizer -->
+            <div class="stage-equalizer" id="equalizer">
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+            </div>
+            
+            <!-- Status Badge -->
+            <div class="stage-status" id="statusBadge">
+                <span class="stage-status-dot"></span>
+                <span class="stage-status-text">OFFLINE</span>
+            </div>
+        </div>
+        
+        <!-- Controls Panel -->
+        <div class="stage-controls" id="controlsPanel">
+            <div class="stage-controls-inner">
+                <h1 class="stage-title">BROADCAST STUDIO</h1>
+                <p class="stage-subtitle">Start your live performance</p>
+                
+                <div class="stage-input-group">
+                    <label class="stage-label">Your DJ Name</label>
+                    <input 
+                        type="text" 
+                        id="djNameInput" 
+                        class="stage-input" 
+                        placeholder="DJ Cool Vibes"
+                        maxlength="30"
+                    />
+                </div>
+                
+                <div class="stage-input-group">
+                    <label class="stage-label">Stream URL</label>
+                    <input 
+                        type="url" 
+                        id="streamUrl" 
+                        class="stage-input" 
+                        placeholder="https://your-stream.com/audio.mp3"
+                    />
+                </div>
+                
+                <button id="cameraBtn" class="stage-btn stage-btn--camera">
+                    <span>📹</span> Enable Camera
+                </button>
+                
+                <button id="goLiveBtn" class="stage-btn stage-btn--primary" disabled>
+                    <span>🎵</span> Go Live
+                </button>
+                
+                <button id="stopBtn" class="stage-btn stage-btn--danger" style="display: none;">
+                    <span>⏹</span> Stop Broadcast
+                </button>
+                
+                <div class="stage-divider"></div>
+                
+                <div class="stage-links">
+                    <a href="index.html" class="stage-link">🏠 Main Page</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div class="stage-error" id="errorMessage" style="display: none;">
+            <span class="stage-error-icon">⚠️</span>
+            <span class="stage-error-text" id="errorText"></span>
+            <button class="stage-error-close" id="errorClose">×</button>
+        </div>
+    </div>
+</body>
+
+</html>
