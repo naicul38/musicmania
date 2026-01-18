@@ -1,20 +1,172 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en">
 
 <head>
-    <title>Vicetream Tunes</title>
+    <title>Book Your Live DJ Session - Vicetream Tunes</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="assets/css/main.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <meta name="description" content="Book your live DJ session on Vicetream Tunes" />
+    
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+    
+    <style>
+        /* Booking page specific styles */
+        #sign-background {
+            background-position: center center;
+            background-size: cover;
+            backface-visibility: hidden;
+            background-repeat: no-repeat;
+            background-image: url('./assets/css/images/markus-spiske-hU9gx8YfVK4-unsplash.jpg');
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+        
+        .booking-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 640px;
+            width: 100%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .booking-header h1 {
+            font-family: 'Archivo Black', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: #FF006E;
+            text-shadow: 0 0 20px rgba(255, 0, 110, 0.5);
+        }
+        
+        .booking-header p {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+        
+        .booking-header .instructions {
+            background: rgba(0, 245, 255, 0.1);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        
+        .booking-header .instructions h3 {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: #00F5FF;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        
+        .booking-header .instructions ul {
+            list-style: none;
+            padding: 0;
+            font-size: 0.875rem;
+        }
+        
+        .booking-header .instructions li {
+            margin-bottom: 8px;
+            padding-left: 24px;
+            position: relative;
+        }
+        
+        .booking-header .instructions li::before {
+            content: '▸';
+            position: absolute;
+            left: 0;
+            color: #FF006E;
+        }
+        
+        #formpage {
+            max-width: 640px;
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00F5FF;
+            border-radius: 8px;
+            color: #00F5FF;
+            text-decoration: none;
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background: rgba(0, 245, 255, 0.1);
+            box-shadow: 0 0 20px rgba(0, 245, 255, 0.3);
+        }
+        
+        @media (max-width: 768px) {
+            .booking-header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .booking-header p {
+                font-size: 0.875rem;
+            }
+            
+            #formpage {
+                height: 1200px;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div id="wrapper">
         <div id="sign-background">
-            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdrZDd6J4s_8vzVzXjwQ52tjlyozlJRKLCok57NDj8iuszr1g/viewform?embedded=true" width="640" height="1346" frameborder="0" marginheight="0" marginwidth="0" id="formpage">Loading…</iframe>
+            <div class="booking-header">
+                <h1>📻 Book Your Live DJ Session</h1>
+                <p>Ready to broadcast your set to the world? Fill out the form below to schedule your live performance on Vicetream Tunes.</p>
+                
+                <div class="instructions">
+                    <h3>🎵 How to Prepare Your Stream</h3>
+                    <ul>
+                        <li>Set up your audio stream URL (MP3 or AAC format)</li>
+                        <li>Test your stream before your scheduled session</li>
+                        <li>Ensure you have a stable internet connection</li>
+                        <li>Have your camera ready for the live performance</li>
+                        <li>Check audio levels to avoid clipping</li>
+                    </ul>
+                </div>
+                
+                <a href="stage.html" class="back-link">🎚️ Go to Live Stage</a>
+            </div>
+            
+            <iframe 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdrZDd6J4s_8vzVzXjwQ52tjlyozlJRKLCok57NDj8iuszr1g/viewform?embedded=true" 
+                width="640" 
+                height="1346" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0" 
+                id="formpage">
+                Loading…
+            </iframe>
+            
+            <a href="index.html" class="back-link" style="margin-bottom: 40px;">← Back to Main Page</a>
         </div>
-    </div>
     </div>
 </body>
 

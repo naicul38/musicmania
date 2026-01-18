@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <title>Live Stage - Vicetream Tunes</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Broadcast your live DJ set with Vicetream Tunes" />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+    
+    <link rel="stylesheet" href="stage.css" />
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+    
+    <script defer src="stage.js"></script>
+</head>
+
+<body>
+    <div class="stage-container">
+        <!-- Animated Grid Background -->
+        <div class="stage-background">
+            <div class="grid-floor"></div>
+            <div class="stars"></div>
+        </div>
+        
+        <!-- Video Feed (Camera) -->
+        <video id="cameraFeed" class="camera-feed" autoplay playsinline muted></video>
+        
+        <!-- Audio Stream (Hidden) -->
+        <audio id="streamAudio" crossorigin="anonymous"></audio>
+        
+        <!-- Stage Overlay Frame -->
+        <div class="stage-overlay">
+            <!-- Scanline Effect -->
+            <div class="scanlines"></div>
+            
+            <!-- Corner Decorations -->
+            <div class="corner corner--tl"></div>
+            <div class="corner corner--tr"></div>
+            <div class="corner corner--bl"></div>
+            <div class="corner corner--br"></div>
+            
+            <!-- Audio Visualizer -->
+            <div class="equalizer" id="equalizer">
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+            </div>
+            
+            <!-- Status Badge -->
+            <div class="status-badge" id="statusBadge">
+                <span class="status-indicator"></span>
+                <span class="status-text">OFFLINE</span>
+            </div>
+        </div>
+        
+        <!-- Controls Panel -->
+        <div class="controls-panel" id="controlsPanel">
+            <div class="panel-content">
+                <h1 class="stage-title">
+                    <span class="title-glitch" data-text="LIVE STAGE">LIVE STAGE</span>
+                </h1>
+                
+                <div class="control-group">
+                    <label for="streamUrl" class="control-label">STREAM URL</label>
+                    <input 
+                        type="url" 
+                        id="streamUrl" 
+                        class="control-input" 
+                        placeholder="https://your-stream-url.com/stream.mp3"
+                        autocomplete="off"
+                    />
+                    <span class="input-hint">Enter your audio stream URL (MP3/AAC)</span>
+                </div>
+                
+                <div class="control-group">
+                    <button id="cameraBtn" class="arcade-btn arcade-btn--secondary">
+                        <span class="btn-icon">📹</span>
+                        <span class="btn-text">ENABLE CAMERA</span>
+                    </button>
+                </div>
+                
+                <div class="control-group">
+                    <button id="goLiveBtn" class="arcade-btn arcade-btn--primary" disabled>
+                        <span class="btn-icon">🎵</span>
+                        <span class="btn-text">GO LIVE</span>
+                    </button>
+                </div>
+                
+                <div class="control-group">
+                    <button id="stopBtn" class="arcade-btn arcade-btn--danger" style="display: none;">
+                        <span class="btn-icon">⏹</span>
+                        <span class="btn-text">STOP BROADCAST</span>
+                    </button>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <div class="booking-info">
+                    <p>Want to schedule a session?</p>
+                    <a href="signup.html" class="link-btn" target="_blank">
+                        📅 Book Your Slot
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error Message -->
+        <div class="error-message" id="errorMessage" style="display: none;">
+            <span class="error-icon">⚠️</span>
+            <span class="error-text" id="errorText"></span>
+            <button class="error-close" id="errorClose">×</button>
+        </div>
+        
+        <!-- Back Button -->
+        <a href="index.html" class="back-btn" title="Back to main page">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+            </svg>
+        </a>
+    </div>
+</body>
+
+</html>

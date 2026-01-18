@@ -1,0 +1,392 @@
+(function() {
+    'use strict';
+    
+    // ==========================================================================
+    // DOM Elements
+    // ==========================================================================
+    
+    const elements = {
+        cameraFeed: null,
+        streamAudio: null,
+        streamUrlInput: null,
+        cameraBtn: null,
+        goLiveBtn: null,
+        stopBtn: null,
+        controlsPanel: null,
+        statusBadge: null,
+        statusText: null,
+        equalizer: null,
+        eqBars: null,
+        errorMessage: null,
+        errorText: null,
+        errorClose: null
+    };
+    
+    // ==========================================================================
+    // State
+    // ==========================================================================
+    
+    let state = {
+        cameraStream: null,
+        audioContext: null,
+        analyser: null,
+        isLive: false,
+        isCameraEnabled: false,
+        animationFrameId: null
+    };
+    
+    // ==========================================================================
+    // Initialization
+    // ==========================================================================
+    
+    function init() {
+        cacheElements();
+        bindEvents();
+        checkBrowserSupport();
+    }
+    
+    function cacheElements() {
+        elements.cameraFeed = document.getElementById('cameraFeed');
+        elements.streamAudio = document.getElementById('streamAudio');
+        elements.streamUrlInput = document.getElementById('streamUrl');
+        elements.cameraBtn = document.getElementById('cameraBtn');
+        elements.goLiveBtn = document.getElementById('goLiveBtn');
+        elements.stopBtn = document.getElementById('stopBtn');
+        elements.controlsPanel = document.getElementById('controlsPanel');
+        elements.statusBadge = document.getElementById('statusBadge');
+        elements.statusText = elements.statusBadge?.querySelector('.status-text');
+        elements.equalizer = document.getElementById('equalizer');
+        elements.eqBars = elements.equalizer?.querySelectorAll('.eq-bar');
+        elements.errorMessage = document.getElementById('errorMessage');
+        elements.errorText = document.getElementById('errorText');
+        elements.errorClose = document.getElementById('errorClose');
+    }
+    
+    function bindEvents() {
+        elements.cameraBtn?.addEventListener('click', handleCameraToggle);
+        elements.goLiveBtn?.addEventListener('click', handleGoLive);
+        elements.stopBtn?.addEventListener('click', handleStop);
+        elements.streamUrlInput?.addEventListener('input', handleStreamUrlChange);
+        elements.errorClose?.addEventListener('click', hideError);
+        
+        // Audio element events
+        elements.streamAudio?.addEventListener('play', onAudioPlay);
+        elements.streamAudio?.addEventListener('pause', onAudioPause);
+        elements.streamAudio?.addEventListener('error', onAudioError);
+    }
+    
+    function checkBrowserSupport() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            showError('Your browser does not support camera access. Please use a modern browser.');
+            elements.cameraBtn.disabled = true;
+        }
+        
+        if (!window.AudioContext && !window.webkitAudioContext) {
+            console.warn('Web Audio API not supported. Visualizer will not work.');
+        }
+    }
+    
+    // ==========================================================================
+    // Camera Management
+    // ==========================================================================
+    
+    async function handleCameraToggle() {
+        if (state.isCameraEnabled) {
+            disableCamera();
+        } else {
+            await enableCamera();
+        }
+    }
+    
+    async function enableCamera() {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: {
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 },
+                    facingMode: 'user'
+                },
+                audio: false
+            });
+            
+            state.cameraStream = stream;
+            elements.cameraFeed.srcObject = stream;
+            elements.cameraFeed.classList.add('active');
+            
+            state.isCameraEnabled = true;
+            updateCameraButton();
+            checkGoLiveButton();
+            
+        } catch (error) {
+            console.error('Camera error:', error);
+            let errorMsg = 'Failed to access camera. ';
+            
+            if (error.name === 'NotAllowedError') {
+                errorMsg += 'Please grant camera permissions.';
+            } else if (error.name === 'NotFoundError') {
+                errorMsg += 'No camera found on your device.';
+            } else {
+                errorMsg += error.message;
+            }
+            
+            showError(errorMsg);
+        }
+    }
+    
+    function disableCamera() {
+        if (state.cameraStream) {
+            state.cameraStream.getTracks().forEach(track => track.stop());
+            state.cameraStream = null;
+        }
+        
+        elements.cameraFeed.srcObject = null;
+        elements.cameraFeed.classList.remove('active');
+        
+        state.isCameraEnabled = false;
+        updateCameraButton();
+        checkGoLiveButton();
+    }
+    
+    function updateCameraButton() {
+        if (state.isCameraEnabled) {
+            elements.cameraBtn.querySelector('.btn-text').textContent = 'DISABLE CAMERA';
+            elements.cameraBtn.querySelector('.btn-icon').textContent = '📹';
+        } else {
+            elements.cameraBtn.querySelector('.btn-text').textContent = 'ENABLE CAMERA';
+            elements.cameraBtn.querySelector('.btn-icon').textContent = '📹';
+        }
+    }
+    
+    // ==========================================================================
+    // Stream Management
+    // ==========================================================================
+    
+    function handleStreamUrlChange() {
+        checkGoLiveButton();
+    }
+    
+    function checkGoLiveButton() {
+        const hasStreamUrl = elements.streamUrlInput?.value.trim().length > 0;
+        const hasCamera = state.isCameraEnabled;
+        
+        elements.goLiveBtn.disabled = !(hasStreamUrl && hasCamera);
+    }
+    
+    async function handleGoLive() {
+        const streamUrl = elements.streamUrlInput?.value.trim();
+        
+        if (!streamUrl) {
+            showError('Please enter a stream URL');
+            return;
+        }
+        
+        if (!state.isCameraEnabled) {
+            showError('Please enable your camera first');
+            return;
+        }
+        
+        try {
+            // Load audio stream
+            elements.streamAudio.src = streamUrl;
+            elements.streamAudio.load();
+            
+            await elements.streamAudio.play();
+            
+            // Initialize audio visualizer
+            await initAudioVisualizer();
+            
+            // Update UI
+            state.isLive = true;
+            elements.controlsPanel.classList.add('hidden');
+            elements.stopBtn.style.display = 'flex';
+            elements.statusBadge.classList.add('live');
+            elements.statusText.textContent = 'LIVE';
+            
+        } catch (error) {
+            console.error('Failed to start stream:', error);
+            showError('Failed to load stream. Check the URL and try again.');
+        }
+    }
+    
+    function handleStop() {
+        // Stop audio
+        elements.streamAudio.pause();
+        elements.streamAudio.src = '';
+        
+        // Stop visualizer
+        stopAudioVisualizer();
+        
+        // Disable camera
+        disableCamera();
+        
+        // Reset UI
+        state.isLive = false;
+        elements.controlsPanel.classList.remove('hidden');
+        elements.stopBtn.style.display = 'none';
+        elements.statusBadge.classList.remove('live');
+        elements.statusText.textContent = 'OFFLINE';
+        elements.streamUrlInput.value = '';
+        
+        checkGoLiveButton();
+    }
+    
+    // ==========================================================================
+    // Audio Visualizer
+    // ==========================================================================
+    
+    async function initAudioVisualizer() {
+        try {
+            // Create audio context
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            state.audioContext = new AudioContextClass();
+            
+            // Create analyser
+            state.analyser = state.audioContext.createAnalyser();
+            state.analyser.fftSize = 256;
+            state.analyser.smoothingTimeConstant = 0.8;
+            
+            // Connect audio source
+            const source = state.audioContext.createMediaElementSource(elements.streamAudio);
+            source.connect(state.analyser);
+            state.analyser.connect(state.audioContext.destination);
+            
+            // Start visualization
+            visualize();
+            
+        } catch (error) {
+            console.error('Failed to initialize audio visualizer:', error);
+            // Continue without visualizer
+        }
+    }
+    
+    function visualize() {
+        if (!state.isLive || !state.analyser) return;
+        
+        const bufferLength = state.analyser.frequencyBinCount;
+        const dataArray = new Uint8Array(bufferLength);
+        
+        function draw() {
+            if (!state.isLive) return;
+            
+            state.animationFrameId = requestAnimationFrame(draw);
+            
+            state.analyser.getByteFrequencyData(dataArray);
+            
+            // Update equalizer bars
+            const barsCount = elements.eqBars.length;
+            const step = Math.floor(bufferLength / barsCount);
+            
+            elements.eqBars.forEach((bar, index) => {
+                const value = dataArray[index * step];
+                const percent = value / 255;
+                const height = 20 + (percent * 100); // 20px to 120px
+                bar.style.height = height + 'px';
+            });
+        }
+        
+        draw();
+    }
+    
+    function stopAudioVisualizer() {
+        if (state.animationFrameId) {
+            cancelAnimationFrame(state.animationFrameId);
+            state.animationFrameId = null;
+        }
+        
+        if (state.audioContext) {
+            state.audioContext.close();
+            state.audioContext = null;
+            state.analyser = null;
+        }
+        
+        // Reset bars to idle state
+        elements.eqBars?.forEach(bar => {
+            bar.style.height = '20px';
+        });
+    }
+    
+    // ==========================================================================
+    // Audio Events
+    // ==========================================================================
+    
+    function onAudioPlay() {
+        console.log('Audio started playing');
+    }
+    
+    function onAudioPause() {
+        console.log('Audio paused');
+    }
+    
+    function onAudioError(event) {
+        console.error('Audio error:', event);
+        
+        const error = elements.streamAudio.error;
+        let message = 'Failed to load audio stream. ';
+        
+        if (error) {
+            switch (error.code) {
+                case error.MEDIA_ERR_ABORTED:
+                    message += 'Playback aborted.';
+                    break;
+                case error.MEDIA_ERR_NETWORK:
+                    message += 'Network error occurred.';
+                    break;
+                case error.MEDIA_ERR_DECODE:
+                    message += 'Failed to decode audio.';
+                    break;
+                case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                    message += 'Stream format not supported.';
+                    break;
+                default:
+                    message += 'Unknown error occurred.';
+            }
+        }
+        
+        showError(message);
+        
+        if (state.isLive) {
+            handleStop();
+        }
+    }
+    
+    // ==========================================================================
+    // Error Handling
+    // ==========================================================================
+    
+    function showError(message) {
+        elements.errorText.textContent = message;
+        elements.errorMessage.style.display = 'flex';
+        
+        // Auto-hide after 5 seconds
+        setTimeout(hideError, 5000);
+    }
+    
+    function hideError() {
+        elements.errorMessage.style.display = 'none';
+    }
+    
+    // ==========================================================================
+    // Cleanup on Page Unload
+    // ==========================================================================
+    
+    window.addEventListener('beforeunload', () => {
+        if (state.cameraStream) {
+            state.cameraStream.getTracks().forEach(track => track.stop());
+        }
+        
+        if (state.audioContext) {
+            state.audioContext.close();
+        }
+    });
+    
+    // ==========================================================================
+    // Bootstrap
+    // ==========================================================================
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+    
+})();

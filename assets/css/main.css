@@ -122,13 +122,13 @@ html {
     min-height: 100vh;
     transition: background var(--transition-theme), color var(--transition-theme);
     overflow-x: hidden;
-}
-
-button {
+                }
+                
+                button {
     font-family: inherit;
-    cursor: pointer;
-    border: none;
-    background: none;
+                    cursor: pointer;
+                    border: none;
+                    background: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -140,6 +140,81 @@ button {
     display: flex;
     flex-direction: column;
     position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   ON AIR Button (Live Stage Link)
+   -------------------------------------------------------------------------- */
+
+.onair-btn {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border: 2px solid #FF006E;
+    border-radius: 50px;
+    text-decoration: none;
+    color: #FF006E;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 0.875rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    box-shadow: 
+        0 0 20px rgba(255, 0, 110, 0.4),
+        inset 0 0 10px rgba(255, 0, 110, 0.1);
+    transition: all 0.3s ease;
+    animation: onair-pulse 2s ease-in-out infinite;
+}
+
+.onair-btn:hover {
+    transform: scale(1.05);
+    background: rgba(255, 0, 110, 0.15);
+    box-shadow: 
+        0 0 30px rgba(255, 0, 110, 0.6),
+        inset 0 0 15px rgba(255, 0, 110, 0.2);
+}
+
+.onair-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #FF006E;
+    box-shadow: 0 0 10px #FF006E;
+    animation: onair-blink 1.5s ease-in-out infinite;
+}
+
+.onair-text {
+    font-weight: 900;
+}
+
+@keyframes onair-pulse {
+    0%, 100% {
+        box-shadow: 
+            0 0 20px rgba(255, 0, 110, 0.4),
+            inset 0 0 10px rgba(255, 0, 110, 0.1);
+    }
+    50% {
+        box-shadow: 
+            0 0 35px rgba(255, 0, 110, 0.6),
+            inset 0 0 15px rgba(255, 0, 110, 0.2);
+    }
+}
+
+@keyframes onair-blink {
+    0%, 100% {
+        opacity: 1;
+        box-shadow: 0 0 10px #FF006E;
+    }
+    50% {
+        opacity: 0.6;
+        box-shadow: 0 0 20px #FF006E;
+    }
 }
 
 /* --------------------------------------------------------------------------
@@ -211,7 +286,7 @@ button {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
+                    position: relative;
     height: 220px;
     padding: 0 20px;
 }
@@ -432,11 +507,11 @@ button {
 /* Track update animation */
 @keyframes track-fade-in {
                     from {
-        opacity: 0;
+                        opacity: 0;
         transform: translateY(8px);
     }
     to {
-        opacity: 1;
+                        opacity: 1;
         transform: translateY(0);
     }
 }
@@ -497,7 +572,7 @@ button {
 }
 
 .play-btn.playing .play-btn__icon--pause {
-    display: block;
+                    display: block;
 }
 
 /* --------------------------------------------------------------------------
@@ -507,7 +582,7 @@ button {
 .footer {
     padding: var(--space-md);
     text-align: center;
-    position: relative;
+                    position: relative;
     z-index: 1;
 }
 
@@ -647,6 +722,19 @@ button {
         gap: var(--space-md);
     }
     
+    .onair-btn {
+        top: 10px;
+        left: 10px;
+        padding: 8px 14px;
+        font-size: 0.75rem;
+        gap: 8px;
+    }
+    
+    .onair-indicator {
+        width: 10px;
+        height: 10px;
+    }
+    
     .floppy-stack {
         height: auto;
         flex-wrap: nowrap;
@@ -654,8 +742,8 @@ button {
         justify-content: center;
         padding: 30px 10px 50px;
         margin: 0;
-        width: 100%;
-    }
+                    width: 100%;
+                }
     
     .floppy {
         width: 90px;
