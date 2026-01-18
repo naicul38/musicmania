@@ -54,9 +54,9 @@
         elements.stopBtn = document.getElementById('stopBtn');
         elements.controlsPanel = document.getElementById('controlsPanel');
         elements.statusBadge = document.getElementById('statusBadge');
-        elements.statusText = elements.statusBadge?.querySelector('.status-text');
+        elements.statusText = elements.statusBadge?.querySelector('.stage-status-text');
         elements.equalizer = document.getElementById('equalizer');
-        elements.eqBars = elements.equalizer?.querySelectorAll('.eq-bar');
+        elements.eqBars = elements.equalizer?.querySelectorAll('.stage-eq-bar');
         elements.errorMessage = document.getElementById('errorMessage');
         elements.errorText = document.getElementById('errorText');
         elements.errorClose = document.getElementById('errorClose');
@@ -148,12 +148,11 @@
     }
     
     function updateCameraButton() {
+        const btnText = elements.cameraBtn.childNodes[1];
         if (state.isCameraEnabled) {
-            elements.cameraBtn.querySelector('.btn-text').textContent = 'DISABLE CAMERA';
-            elements.cameraBtn.querySelector('.btn-icon').textContent = '📹';
+            btnText.textContent = ' Disable Camera';
         } else {
-            elements.cameraBtn.querySelector('.btn-text').textContent = 'ENABLE CAMERA';
-            elements.cameraBtn.querySelector('.btn-icon').textContent = '📹';
+            btnText.textContent = ' Enable Camera';
         }
     }
     

@@ -157,40 +157,62 @@ html {
     padding: 12px 20px;
     background: rgba(0, 0, 0, 0.8);
     backdrop-filter: blur(10px);
-    border: 2px solid #FF006E;
+    border: 2px solid #666;
     border-radius: 50px;
     text-decoration: none;
-    color: #FF006E;
+    color: #666;
     font-family: 'Archivo Black', sans-serif;
     font-size: 0.875rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
     box-shadow: 
-        0 0 20px rgba(255, 0, 110, 0.4),
-        inset 0 0 10px rgba(255, 0, 110, 0.1);
+        0 0 10px rgba(100, 100, 100, 0.2),
+        inset 0 0 5px rgba(100, 100, 100, 0.1);
     transition: all 0.3s ease;
-    animation: onair-pulse 2s ease-in-out infinite;
 }
 
 .onair-btn:hover {
     transform: scale(1.05);
-    background: rgba(255, 0, 110, 0.15);
+    border-color: #888;
+    color: #888;
     box-shadow: 
-        0 0 30px rgba(255, 0, 110, 0.6),
-        inset 0 0 15px rgba(255, 0, 110, 0.2);
+        0 0 15px rgba(100, 100, 100, 0.3),
+        inset 0 0 8px rgba(100, 100, 100, 0.15);
 }
 
 .onair-indicator {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: #FF006E;
-    box-shadow: 0 0 10px #FF006E;
-    animation: onair-blink 1.5s ease-in-out infinite;
+    background: #555;
+    box-shadow: 0 0 5px #555;
 }
 
 .onair-text {
     font-weight: 900;
+}
+
+/* Active state (when someone is live) */
+.onair-btn.live {
+    border-color: #FF006E;
+    color: #FF006E;
+    box-shadow: 
+        0 0 20px rgba(255, 0, 110, 0.4),
+        inset 0 0 10px rgba(255, 0, 110, 0.1);
+    animation: onair-pulse 2s ease-in-out infinite;
+}
+
+.onair-btn.live:hover {
+    background: rgba(255, 0, 110, 0.15);
+    box-shadow: 
+        0 0 30px rgba(255, 0, 110, 0.6),
+        inset 0 0 15px rgba(255, 0, 110, 0.2);
+}
+
+.onair-btn.live .onair-indicator {
+    background: #FF006E;
+    box-shadow: 0 0 10px #FF006E;
+    animation: onair-blink 1.5s ease-in-out infinite;
 }
 
 @keyframes onair-pulse {
