@@ -7,21 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content="Stream curated radio stations - Lounge, Cool, Rock, Party, and Chill music" />
     
-    <!-- Preconnect to external resources -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://ice1.somafm.com" />
     <link rel="preconnect" href="https://somafm.com" />
     
-    <!-- Google Fonts - Retro style -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Mono:wght@400;700&family=Playfair+Display:wght@700&family=Bebas+Neue&family=Righteous&family=Fredoka:wght@600&family=Pacifico&display=swap" rel="stylesheet" />
     
     <link rel="stylesheet" href="assets/css/main.css" />
     <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
     
+    <!-- Configuration (generated from environment variables) -->
+    <script src="config.js"></script>
+    
     <script defer src="playback.js"></script>
     <script defer>
-        // Check if someone is live and update ON AIR button
         document.addEventListener('DOMContentLoaded', function() {
             function updateOnAirButton() {
                 const isLive = localStorage.getItem('vicetream_live_status') === 'true';
@@ -36,10 +36,8 @@
                 }
             }
             
-            // Update immediately
             updateOnAirButton();
             
-            // Check every 5 seconds
             setInterval(updateOnAirButton, 5000);
         });
     </script>
@@ -47,18 +45,14 @@
 
 <body>
     <div class="app">
-        <!-- ON AIR Button (Live Stage Link) -->
         <a href="stage.html" class="onair-btn" title="Go to Live Stage">
             <span class="onair-indicator"></span>
             <span class="onair-text">ON AIR</span>
         </a>
         
-        <!-- Halftone pattern overlay -->
         <div class="halftone-overlay"></div>
         
-        <!-- Main content -->
         <main class="main-content">
-            <!-- Floppy Disk Stack -->
             <div class="floppy-stack">
                 <button class="floppy floppy--lounge active" data-stream="0" data-theme="lounge" aria-label="Lounge station">
                     <div class="floppy__slider"></div>
@@ -101,7 +95,6 @@
                 </button>
             </div>
             
-            <!-- Now Playing -->
             <div class="now-playing">
                 <span class="now-playing__label">NOW PLAYING</span>
                 <span class="now-playing__station" id="stationName">Lounge</span>
@@ -111,7 +104,6 @@
                 </div>
             </div>
             
-            <!-- Play/Pause Control -->
             <button class="play-btn" id="playbackButton" aria-label="Play or pause music">
                 <svg class="play-btn__icon play-btn__icon--play" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z"/>
@@ -122,7 +114,6 @@
             </button>
         </main>
         
-        <!-- Footer -->
         <footer class="footer">
             <a href="signup.html" class="footer__link" target="_blank" rel="noopener">Book a live event</a>
         </footer>
