@@ -338,9 +338,12 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-                    position: relative;
+    position: relative;
     height: 220px;
-    padding: 0 20px;
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
 }
 
 /* --------------------------------------------------------------------------
@@ -871,8 +874,9 @@ html {
 /* Mobile adjustments */
 @media (max-width: 480px) {
     .main-content {
-        padding: var(--space-sm);
-        gap: var(--space-md);
+        padding: var(--space-xs) 0;
+        gap: var(--space-sm);
+        overflow-x: hidden;
                         }
     
     .onair-btn {
@@ -890,18 +894,22 @@ html {
     
     .floppy-stack {
         height: auto;
+        min-height: 150px;
         flex-wrap: nowrap;
         overflow: visible;
         justify-content: center;
-        padding: 30px 5px 50px;
-        margin: 0;
+        align-items: center;
+        padding: 40px 0 60px;
+        margin: 0 auto;
         width: 100%;
+        max-width: 100vw;
                         }
     
     .floppy {
-        width: 70px;
-        height: 70px;
-        margin-left: -30px;
+        width: 75px;
+        height: 75px;
+        margin-left: -35px;
+        flex-shrink: 0;
                         }
     
     .floppy:first-child {
