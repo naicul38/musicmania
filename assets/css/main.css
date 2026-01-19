@@ -435,9 +435,17 @@ html {
     --label-bg: #FFF5E6;
 }
 
+.floppy--lounge .floppy__label-text {
+    font-family: 'dancing_scriptregular', cursive;
+}
+
 .floppy--cool {
     --disk-color: #4ECDC4;
     --label-bg: #E8F8F5;
+}
+
+.floppy--cool .floppy__label-text {
+    font-family: 'permanent_markerregular', cursive;
 }
 
 .floppy--rock {
@@ -446,6 +454,7 @@ html {
 }
 
 .floppy--rock .floppy__label-text {
+    font-family: 'piedraregular', cursive;
     color: #F1FAEE;
 }
 
@@ -459,12 +468,17 @@ html {
 }
 
 .floppy--party .floppy__label-text {
+    font-family: 'a_alloy_inkregular', cursive;
     color: #2B2D42;
 }
 
 .floppy--chill {
     --disk-color: #9D8DF1;
     --label-bg: #F0EDFF;
+}
+
+.floppy--chill .floppy__label-text {
+    font-family: 'indie_flowerregular', cursive;
 }
 
 /* --------------------------------------------------------------------------
@@ -673,6 +687,26 @@ html {
         font-size: 1.3rem;
     }
     
+    .floppy--lounge .floppy__label-text {
+        font-size: 1.6rem;
+    }
+    
+    .floppy--cool .floppy__label-text {
+        font-size: 1.25rem;
+    }
+    
+    .floppy--rock .floppy__label-text {
+        font-size: 1.25rem;
+    }
+    
+    .floppy--party .floppy__label-text {
+        font-size: 1.35rem;
+    }
+    
+    .floppy--chill .floppy__label-text {
+        font-size: 1.5rem;
+    }
+    
     .floppy__hole {
         width: 40px;
         height: 15px;
@@ -718,6 +752,26 @@ html {
     
     .floppy__label-text {
         font-size: 1.6rem;
+    }
+    
+    .floppy--lounge .floppy__label-text {
+        font-size: 2rem;
+    }
+    
+    .floppy--cool .floppy__label-text {
+        font-size: 1.5rem;
+    }
+    
+    .floppy--rock .floppy__label-text {
+        font-size: 1.5rem;
+    }
+    
+    .floppy--party .floppy__label-text {
+        font-size: 1.65rem;
+    }
+    
+    .floppy--chill .floppy__label-text {
+        font-size: 1.85rem;
     }
     
     .floppy__hole {
@@ -814,6 +868,26 @@ html {
     
     .floppy__label-text {
         font-size: 0.65rem;
+    }
+    
+    .floppy--lounge .floppy__label-text {
+        font-size: 0.8rem;
+    }
+    
+    .floppy--cool .floppy__label-text {
+        font-size: 0.6rem;
+    }
+    
+    .floppy--rock .floppy__label-text {
+        font-size: 0.6rem;
+    }
+    
+    .floppy--party .floppy__label-text {
+        font-size: 0.7rem;
+    }
+    
+    .floppy--chill .floppy__label-text {
+        font-size: 0.75rem;
     }
     
     .floppy__hole {
