@@ -155,11 +155,12 @@
     }
     
     function fetchInternetRadioMetadata(station) {
-        // Try to fetch from internet-radio.com station page
+        // Fetch from internet-radio.com station page using CORS proxy
         var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/';
+        var corsProxy = 'https://api.allorigins.win/raw?url=';
+        var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
         
-        // Use a CORS proxy or direct fetch
-        fetch(stationUrl)
+        fetch(proxiedUrl)
             .then(function(response) {
                 if (!response.ok) throw new Error('Network response was not ok');
                 return response.text();
@@ -191,7 +192,6 @@
             })
             .catch(function(error) {
                 console.warn('Failed to fetch Internet Radio metadata:', error);
-                console.warn('CORS might be blocking the request. Showing station name instead.');
                 updateTrackDisplay('Now Playing', station.name);
             });
     }
