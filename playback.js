@@ -67,7 +67,7 @@
         }
     }
     
-    var METADATA_UPDATE_INTERVAL = 20000; // 20 seconds
+    var METADATA_UPDATE_INTERVAL = 5000; // 5 seconds
     
     // ==========================================================================
     // State
@@ -347,6 +347,9 @@
         // Update current station
         currentStationIndex = index;
         updateActiveState(index);
+        
+        // Fetch metadata immediately for new station
+        fetchMetadata();
         
         // Create and configure audio
         audioElement = new Audio();
