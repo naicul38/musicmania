@@ -1,0 +1,32 @@
+{
+  "buildCommand": "node build-config.js",
+  "outputDirectory": ".",
+  "installCommand": "echo 'No dependencies to install'",
+  "framework": null,
+  "routes": [
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|webp|mp3|json))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/stage.html",
+      "dest": "/stage.html"
+    },
+    {
+      "src": "/broadcaster.html",
+      "dest": "/broadcaster.html"
+    },
+    {
+      "src": "/signup.html",
+      "dest": "/signup.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
+}
