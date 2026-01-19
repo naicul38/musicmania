@@ -157,43 +157,80 @@
     function fetchInternetRadioMetadata(station) {
         // Fetch from internet-radio.com station page using CORS proxy
         var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/';
-        var corsProxy = 'https://api.allorigins.win/raw?url=';
+        
+        // Try corsproxy.io which is more reliable
+        var corsProxy = 'https://corsproxy.io/?';
         var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
+        
+        console.log('Fetching metadata from:', proxiedUrl);
         
         fetch(proxiedUrl)
             .then(function(response) {
-                if (!response.ok) throw new Error('Network response was not ok');
+                console.log('Response status:', response.status);
+                if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
                 return response.text();
             })
             .then(function(html) {
-                // Parse the HTML to extract "Now Playing" info
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(html, 'text/html');
+                console.log('Received HTML, length:', html.length);
                 
-                // Look for the "Now Playing" text pattern
-                var bodyText = doc.body.textContent || doc.body.innerText || '';
-                var nowPlayingMatch = bodyText.match(/Now Playing\s*:\s*\*\*([^*]+)\*\*/);
+                // Try multiple parsing methods
+                
+                // Method 1: Look for the "Now Playing" text pattern in markdown format
+                var nowPlayingMatch = html.match(/Now Playing\s*:\s*\*\*([^*]+)\*\*/);
                 
                 if (nowPlayingMatch && nowPlayingMatch[1]) {
+                    console.log('Found match (Method 1):', nowPlayingMatch[1]);
                     var trackInfo = nowPlayingMatch[1].trim();
-                    // Split by common separators: " - ", " – ", " — "
-                    var parts = trackInfo.split(/\s*[-–—]\s*/);
-                    
-                    if (parts.length >= 2) {
-                        var artist = parts[0].trim();
-                        var title = parts.slice(1).join(' - ').trim();
-                        updateTrackDisplay(title, artist);
-                    } else {
-                        updateTrackDisplay(trackInfo, station.name);
-                    }
-                } else {
-                    updateTrackDisplay('Now Playing', station.name);
+                    parseAndDisplayTrack(trackInfo, station.name);
+                    return;
                 }
+                
+                // Method 2: Parse HTML and look in the page
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                var bodyText = doc.body.textContent || doc.body.innerText || '';
+                
+                // Try different patterns
+                var patterns = [
+                    /Now Playing\s*:\s*\*\*([^*]+)\*\*/,
+                    /Now Playing\s*:\s*([^\n]+)/i,
+                    /playing[:\s]+([^\n]+)/i
+                ];
+                
+                for (var i = 0; i < patterns.length; i++) {
+                    var match = bodyText.match(patterns[i]);
+                    if (match && match[1]) {
+                        console.log('Found match (Method 2, pattern ' + i + '):', match[1]);
+                        parseAndDisplayTrack(match[1].trim(), station.name);
+                        return;
+                    }
+                }
+                
+                console.warn('Could not find "Now Playing" in response');
+                updateTrackDisplay('Now Playing', station.name);
             })
             .catch(function(error) {
-                console.warn('Failed to fetch Internet Radio metadata:', error);
+                console.error('Failed to fetch Internet Radio metadata:', error);
                 updateTrackDisplay('Now Playing', station.name);
             });
+    }
+    
+    function parseAndDisplayTrack(trackInfo, stationName) {
+        // Remove any markdown or HTML formatting
+        trackInfo = trackInfo.replace(/\*\*/g, '').replace(/<[^>]+>/g, '').trim();
+        
+        // Split by common separators: " - ", " – ", " — "
+        var parts = trackInfo.split(/\s*[-–—]\s*/);
+        
+        if (parts.length >= 2) {
+            var artist = parts[0].trim();
+            var title = parts.slice(1).join(' - ').trim();
+            console.log('Parsed - Artist:', artist, 'Title:', title);
+            updateTrackDisplay(title, artist);
+        } else {
+            console.log('Could not split track info:', trackInfo);
+            updateTrackDisplay(trackInfo, stationName);
+        }
     }
     
     function updateTrackDisplay(title, artist) {
