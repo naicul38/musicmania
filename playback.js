@@ -164,8 +164,8 @@
         
         // List of CORS proxies to try (in order)
         var corsProxies = [
-            'https://api.allorigins.win/raw?url=',
             'https://corsproxy.io/?',
+            'https://api.allorigins.win/raw?url=',
             'https://api.codetabs.com/v1/proxy?quest='
         ];
         
