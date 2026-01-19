@@ -23,15 +23,15 @@ LIVE_STREAM_ENDPOINT=https://your-streaming-server.com/live
 LIVE_WEBRTC_SIGNALING_SERVER=wss://your-signaling-server.com
 ```
 
-### 2. Generate Configuration File
+### 2. Embed Configuration
 
-Run the build script to generate `config.js` from your environment variables:
+Run the build script to embed your environment variables directly into the JavaScript files:
 
 ```bash
 node build-config.js
 ```
 
-This will create a `config.js` file with your configuration. This file is git-ignored and should never be committed to version control.
+This will inject base64-encoded configuration directly into `playback.js`, `stage.js`, and `stage-viewer.js`. The configuration is obfuscated and not visible as a separate file in browser sources.
 
 ### 3. Deploy
 
@@ -44,7 +44,7 @@ When deploying to production (e.g., GitHub Pages, Netlify, Vercel):
 
 **Option B: Manual Build**
 - Run `node build-config.js` locally with production credentials
-- Deploy the generated `config.js` file (only for this deployment)
+- Deploy the modified JavaScript files with embedded config
 - Make sure to regenerate for each deployment
 
 ## File Structure
@@ -52,24 +52,23 @@ When deploying to production (e.g., GitHub Pages, Netlify, Vercel):
 ```
 .
 ├── .env                    # Your local environment variables (git-ignored)
-├── .env.example           # Template for environment variables
-├── build-config.js        # Script to generate config.js from env vars
-├── config.js              # Generated configuration (git-ignored)
+├── build-config.js        # Script to embed config into JS files
 ├── index.html             # Main radio player page
-├── playback.js            # Radio player logic
+├── playback.js            # Radio player logic (config embedded)
 ├── stage.html             # Live performance viewer page
-├── stage-viewer.js        # Viewer logic
+├── stage-viewer.js        # Viewer logic (config embedded)
 ├── broadcaster.html       # DJ broadcasting studio
-├── stage.js               # Broadcaster logic
+├── stage.js               # Broadcaster logic (config embedded)
 └── ...
 ```
 
 ## Security Notes
 
-- **Never commit** `.env` or `config.js` files to version control
-- Stream URLs in `config.js` will be visible to users (client-side JavaScript)
+- **Never commit** `.env` file to version control
+- Configuration is base64-encoded and embedded directly in JavaScript files during build
+- While obfuscated, determined users can still decode the config (it's client-side JavaScript)
 - For true security, use a backend API to proxy streams
-- The environment variable approach prevents URLs from being indexed by search engines and makes them less discoverable
+- The embedded approach prevents URLs from being easily visible in browser sources and makes them harder to discover
 
 ## Development
 
