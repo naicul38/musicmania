@@ -116,6 +116,26 @@
     
     function fetchMetadata() {
         var station = stations[currentStationIndex];
+        
+        // Skip metadata fetching if no channel ID
+        if (!station.channel) {
+            console.log('No channel ID for this station - skipping metadata fetch');
+            updateTrackDisplay('Now Playing', station.name);
+            return;
+        }
+        
+        // Detect source type and fetch accordingly
+        if (station.url.includes('internet-radio.com')) {
+            fetchInternetRadioMetadata(station);
+        } else if (station.url.includes('somafm.com')) {
+            fetchSomaFMMetadata(station);
+        } else {
+            // Generic fallback
+            updateTrackDisplay('Now Playing', station.name);
+        }
+    }
+    
+    function fetchSomaFMMetadata(station) {
         var apiUrl = 'https://somafm.com/songs/' + station.channel + '.json';
         
         fetch(apiUrl)
@@ -130,8 +150,49 @@
                 }
             })
             .catch(function(error) {
-                console.warn('Failed to fetch metadata:', error);
-                // Don't clear display on error, keep showing last known track
+                console.warn('Failed to fetch SomaFM metadata:', error);
+            });
+    }
+    
+    function fetchInternetRadioMetadata(station) {
+        // Try to fetch from internet-radio.com station page
+        var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/';
+        
+        // Use a CORS proxy or direct fetch
+        fetch(stationUrl)
+            .then(function(response) {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(function(html) {
+                // Parse the HTML to extract "Now Playing" info
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                
+                // Look for the "Now Playing" text pattern
+                var bodyText = doc.body.textContent || doc.body.innerText || '';
+                var nowPlayingMatch = bodyText.match(/Now Playing\s*:\s*\*\*([^*]+)\*\*/);
+                
+                if (nowPlayingMatch && nowPlayingMatch[1]) {
+                    var trackInfo = nowPlayingMatch[1].trim();
+                    // Split by common separators: " - ", " – ", " — "
+                    var parts = trackInfo.split(/\s*[-–—]\s*/);
+                    
+                    if (parts.length >= 2) {
+                        var artist = parts[0].trim();
+                        var title = parts.slice(1).join(' - ').trim();
+                        updateTrackDisplay(title, artist);
+                    } else {
+                        updateTrackDisplay(trackInfo, station.name);
+                    }
+                } else {
+                    updateTrackDisplay('Now Playing', station.name);
+                }
+            })
+            .catch(function(error) {
+                console.warn('Failed to fetch Internet Radio metadata:', error);
+                console.warn('CORS might be blocking the request. Showing station name instead.');
+                updateTrackDisplay('Now Playing', station.name);
             });
     }
     
