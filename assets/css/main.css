@@ -436,7 +436,9 @@ html {
 }
 
 .floppy--lounge .floppy__label-text {
-    font-family: 'dancing_scriptregular', cursive;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: 0.05em;
 }
 
 .floppy--cool {
@@ -445,7 +447,8 @@ html {
 }
 
 .floppy--cool .floppy__label-text {
-    font-family: 'permanent_markerregular', cursive;
+    font-family: 'Bebas Neue', sans-serif;
+    letter-spacing: 0.1em;
 }
 
 .floppy--rock {
@@ -454,8 +457,9 @@ html {
 }
 
 .floppy--rock .floppy__label-text {
-    font-family: 'piedraregular', cursive;
+    font-family: 'Righteous', cursive;
     color: #F1FAEE;
+    letter-spacing: 0.05em;
 }
 
 .floppy--rock .floppy__label-sub {
@@ -468,8 +472,10 @@ html {
 }
 
 .floppy--party .floppy__label-text {
-    font-family: 'a_alloy_inkregular', cursive;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
     color: #2B2D42;
+    letter-spacing: 0.02em;
 }
 
 .floppy--chill {
@@ -478,7 +484,8 @@ html {
 }
 
 .floppy--chill .floppy__label-text {
-    font-family: 'indie_flowerregular', cursive;
+    font-family: 'Pacifico', cursive;
+    letter-spacing: 0.02em;
 }
 
 /* --------------------------------------------------------------------------
