@@ -371,13 +371,12 @@ html {
 }
 
 /* Fan rotation */
-.floppy:nth-child(1) { transform: rotate(-15deg); z-index: 1; }
-.floppy:nth-child(2) { transform: rotate(-10deg); z-index: 2; }
-.floppy:nth-child(3) { transform: rotate(-5deg); z-index: 3; }
-.floppy:nth-child(4) { transform: rotate(0deg); z-index: 4; }
-.floppy:nth-child(5) { transform: rotate(5deg); z-index: 3; }
-.floppy:nth-child(6) { transform: rotate(10deg); z-index: 2; }
-.floppy:nth-child(7) { transform: rotate(15deg); z-index: 1; }
+.floppy:nth-child(1) { transform: rotate(-12deg); z-index: 1; }
+.floppy:nth-child(2) { transform: rotate(-7deg); z-index: 2; }
+.floppy:nth-child(3) { transform: rotate(-2deg); z-index: 3; }
+.floppy:nth-child(4) { transform: rotate(3deg); z-index: 3; }
+.floppy:nth-child(5) { transform: rotate(8deg); z-index: 2; }
+.floppy:nth-child(6) { transform: rotate(13deg); z-index: 1; }
 
 .floppy:hover {
     transform: translateY(-20px) rotate(0deg) scale(1.08);
@@ -716,9 +715,9 @@ html {
                 }
                 
     .floppy {
-        width: 200px;
-        height: 200px;
-        margin-left: -60px;
+        width: 140px;
+        height: 140px;
+        margin-left: -45px;
                 }
                 
     .floppy:first-child {
@@ -726,53 +725,61 @@ html {
     }
     
     .floppy__slider {
-        width: 100px;
-        height: 22px;
-        top: 14px;
+        width: 70px;
+        height: 16px;
+        top: 10px;
     }
     
     .floppy__slider::after {
-        width: 32px;
-        height: 11px;
-        right: 9px;
-        top: 5px;
+        width: 22px;
+        height: 8px;
+        right: 6px;
+        top: 4px;
                 }
                 
     .floppy__label {
-        top: 44px;
-        left: 16px;
-        right: 16px;
-        bottom: 44px;
+        top: 30px;
+        left: 11px;
+        right: 11px;
+        bottom: 30px;
     }
     
     .floppy__label-text {
-        font-size: 1.3rem;
+        font-size: 0.9rem;
     }
     
     .floppy--lounge .floppy__label-text {
-        font-size: 1.6rem;
+        font-size: 1.1rem;
                 }
                 
     .floppy--cool .floppy__label-text {
-        font-size: 1.25rem;
+        font-size: 0.85rem;
     }
     
     .floppy--rock .floppy__label-text {
-        font-size: 1.25rem;
+        font-size: 0.85rem;
                 }
                 
     .floppy--party .floppy__label-text {
-        font-size: 1.35rem;
+        font-size: 0.95rem;
     }
     
     .floppy--chill .floppy__label-text {
-        font-size: 1.5rem;
+        font-size: 1.05rem;
+    }
+    
+    .floppy--funky .floppy__label-text {
+        font-size: 0.95rem;
+    }
+    
+    .floppy--rap .floppy__label-text {
+        font-size: 0.85rem;
     }
     
     .floppy__hole {
-        width: 40px;
-        height: 15px;
-        bottom: 16px;
+        width: 28px;
+        height: 11px;
+        bottom: 11px;
                 }
 }
 
@@ -836,6 +843,14 @@ html {
         font-size: 1.85rem;
                         }
     
+    .floppy--funky .floppy__label-text {
+        font-size: 1.65rem;
+    }
+    
+    .floppy--rap .floppy__label-text {
+        font-size: 1.5rem;
+    }
+    
     .floppy__hole {
         width: 48px;
         height: 17px;
@@ -878,15 +893,15 @@ html {
         flex-wrap: nowrap;
         overflow: visible;
         justify-content: center;
-        padding: 30px 10px 50px;
+        padding: 30px 5px 50px;
         margin: 0;
-                    width: 100%;
+        width: 100%;
                         }
     
     .floppy {
-        width: 90px;
-        height: 90px;
-        margin-left: -25px;
+        width: 70px;
+        height: 70px;
+        margin-left: -30px;
                         }
     
     .floppy:first-child {
@@ -894,70 +909,79 @@ html {
                     }
     
     /* Keep fan rotation on mobile */
-    .floppy:nth-child(1) { transform: rotate(-15deg); }
-    .floppy:nth-child(2) { transform: rotate(-10deg); }
-    .floppy:nth-child(3) { transform: rotate(-5deg); }
-    .floppy:nth-child(4) { transform: rotate(0deg); }
-    .floppy:nth-child(5) { transform: rotate(5deg); }
-    .floppy:nth-child(6) { transform: rotate(10deg); }
-    .floppy:nth-child(7) { transform: rotate(15deg); }
+    .floppy:nth-child(1) { transform: rotate(-12deg); }
+    .floppy:nth-child(2) { transform: rotate(-7deg); }
+    .floppy:nth-child(3) { transform: rotate(-2deg); }
+    .floppy:nth-child(4) { transform: rotate(3deg); }
+    .floppy:nth-child(5) { transform: rotate(8deg); }
+    .floppy:nth-child(6) { transform: rotate(13deg); }
     
     .floppy:hover {
-        transform: translateY(-15px) rotate(0deg) scale(1.05);
+        transform: translateY(-15px) scale(1.1);
+        z-index: 20 !important;
                         }
     
     .floppy.active {
-        transform: translateY(-20px) rotate(0deg) scale(1.1);
+        transform: translateY(-20px) scale(1.15);
+        z-index: 25 !important;
                         }
     
     .floppy__slider {
-        width: 45px;
-        height: 11px;
-        top: 6px;
+        width: 35px;
+        height: 9px;
+        top: 5px;
                         }
     
     .floppy__slider::after {
-        width: 15px;
-        height: 5px;
-        right: 4px;
-        top: 3px;
+        width: 12px;
+        height: 4px;
+        right: 3px;
+        top: 2px;
                         }
     
     .floppy__label {
-        top: 22px;
-        left: 8px;
-        right: 8px;
-        bottom: 22px;
+        top: 18px;
+        left: 6px;
+        right: 6px;
+        bottom: 18px;
     }
     
     .floppy__label-text {
-        font-size: 0.65rem;
+        font-size: 0.5rem;
     }
     
     .floppy--lounge .floppy__label-text {
-        font-size: 0.8rem;
+        font-size: 0.62rem;
                 }
                 
     .floppy--cool .floppy__label-text {
-        font-size: 0.6rem;
+        font-size: 0.48rem;
                 }
                 
     .floppy--rock .floppy__label-text {
-        font-size: 0.6rem;
+        font-size: 0.48rem;
     }
     
     .floppy--party .floppy__label-text {
-        font-size: 0.7rem;
+        font-size: 0.52rem;
     }
     
     .floppy--chill .floppy__label-text {
-        font-size: 0.75rem;
+        font-size: 0.58rem;
+    }
+    
+    .floppy--funky .floppy__label-text {
+        font-size: 0.52rem;
+    }
+    
+    .floppy--rap .floppy__label-text {
+        font-size: 0.48rem;
     }
     
     .floppy__hole {
-        width: 18px;
-        height: 7px;
-        bottom: 8px;
+        width: 14px;
+        height: 6px;
+        bottom: 6px;
                 }
                 
     .play-btn {

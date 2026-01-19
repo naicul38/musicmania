@@ -29,21 +29,19 @@ if (fs.existsSync(envPath)) {
 const config = {
     streams: {
         1: process.env.STREAM_URL_LOUNGE || '',
-        2: process.env.STREAM_URL_COOL || '',
-        3: process.env.STREAM_URL_ROCK || '',
-        4: process.env.STREAM_URL_PARTY || '',
-        5: process.env.STREAM_URL_CHILL || '',
-        6: process.env.STREAM_URL_FUNKY || '',
-        7: process.env.STREAM_URL_RAP || ''
+        2: process.env.STREAM_URL_ROCK || '',
+        3: process.env.STREAM_URL_PARTY || '',
+        4: process.env.STREAM_URL_CHILL || '',
+        5: process.env.STREAM_URL_FUNKY || '',
+        6: process.env.STREAM_URL_RAP || ''
     },
     channels: {
         1: process.env.CHANNEL_ID_LOUNGE || '',
-        2: process.env.CHANNEL_ID_COOL || '',
-        3: process.env.CHANNEL_ID_ROCK || '',
-        4: process.env.CHANNEL_ID_PARTY || '',
-        5: process.env.CHANNEL_ID_CHILL || '',
-        6: process.env.CHANNEL_ID_FUNKY || '',
-        7: process.env.CHANNEL_ID_RAP || ''
+        2: process.env.CHANNEL_ID_ROCK || '',
+        3: process.env.CHANNEL_ID_PARTY || '',
+        4: process.env.CHANNEL_ID_CHILL || '',
+        5: process.env.CHANNEL_ID_FUNKY || '',
+        6: process.env.CHANNEL_ID_RAP || ''
     },
     live: {
         streamEndpoint: process.env.LIVE_STREAM_ENDPOINT || '',
