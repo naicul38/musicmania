@@ -177,12 +177,17 @@
                 return response.text();
             })
             .then(function(html) {
-                // Look for: Now Playing : **Artist - Title**
-                var match = html.match(/Now\s+Playing\s*:\s*\*\*([^*]+)\*\*/i);
+                // Parse HTML
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
                 
-                if (match && match[1]) {
-                    var trackInfo = match[1].trim();
-                    console.log('Found metadata:', trackInfo);
+                // Target the specific XPath: /html/body/div[1]/div/div[1]/p/b/span
+                // Equivalent selector: body > div:first-of-type > div > div:first-of-type > p > b > span
+                var metadataElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
+                
+                if (metadataElement) {
+                    var trackInfo = metadataElement.textContent.trim();
+                    console.log('Found metadata from XPath:', trackInfo);
                     
                     // Split by " - " to get artist and title
                     if (trackInfo.includes(' - ')) {
@@ -191,8 +196,24 @@
                         var title = parts.slice(1).join(' - ').trim(); // In case title has " - " in it
                         
                         updateTrackDisplay(title, artist);
+                        return;
                     } else {
                         // No separator, show as-is
+                        updateTrackDisplay(trackInfo, station.name);
+                        return;
+                    }
+                }
+                
+                // Fallback: try regex pattern
+                var match = html.match(/Now\s+Playing\s*:\s*\*\*([^*]+)\*\*/i);
+                if (match && match[1]) {
+                    var trackInfo = match[1].trim();
+                    console.log('Found metadata via regex fallback:', trackInfo);
+                    
+                    if (trackInfo.includes(' - ')) {
+                        var parts = trackInfo.split(' - ');
+                        updateTrackDisplay(parts.slice(1).join(' - ').trim(), parts[0].trim());
+                    } else {
                         updateTrackDisplay(trackInfo, station.name);
                     }
                 } else {
