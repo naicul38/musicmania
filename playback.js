@@ -166,110 +166,123 @@
     }
     
     function fetchInternetRadioMetadata(station) {
-        // Fetch from internet-radio.com station page using CORS proxy
-        var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/';
+        // Try the stream metadata endpoint first (Icecast stats)
+        var statsUrl = 'https://us3.internet-radio.com/proxy/' + station.channel + '/stats';
         
-        // List of CORS proxies to try (in order) - corsproxy.io is most reliable
+        // List of CORS proxies to try
         var corsProxies = [
             'https://corsproxy.io/?',
-            'https://api.allorigins.win/raw?url=',
-            'https://api.codetabs.com/v1/proxy?quest='
+            'https://api.allorigins.win/raw?url='
         ];
         
         var proxyIndex = 0;
         
-        function tryFetchWithProxy() {
+        function tryStatsEndpoint() {
             if (proxyIndex >= corsProxies.length) {
-                console.error('All CORS proxies failed for internet-radio.com');
-                updateTrackDisplay('Now Playing', station.name);
+                // If stats endpoint fails, fallback to page scraping
+                tryPageScraping();
                 return;
             }
             
             var corsProxy = corsProxies[proxyIndex];
-            var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
+            var proxiedUrl = corsProxy + encodeURIComponent(statsUrl);
             
-            console.log('Fetching internet-radio.com metadata via proxy #' + (proxyIndex + 1));
+            console.log('Trying stream stats endpoint via proxy #' + (proxyIndex + 1));
             
             fetch(proxiedUrl)
                 .then(function(response) {
-                    if (!response.ok) {
-                        throw new Error('HTTP ' + response.status);
-                    }
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
                     return response.text();
                 })
-                .then(function(html) {
-                    console.log('Received HTML from internet-radio.com (' + html.length + ' bytes)');
+                .then(function(data) {
+                    console.log('Received stats data:', data.substring(0, 200));
                     
-                    // Parse HTML
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(html, 'text/html');
-                    
-                    // Method 1: Try to find specific metadata elements
-                    var nowPlayingEl = doc.querySelector('.now-playing, .current-track, [class*="nowplaying"]');
-                    if (nowPlayingEl) {
-                        var trackText = nowPlayingEl.textContent.trim();
-                        console.log('Found now-playing element:', trackText);
-                        parseAndDisplayTrack(trackText, station.name);
-                        return;
-                    }
-                    
-                    // Method 2: Search in body text for "Now Playing: **Artist - Title**"
-                    var bodyText = doc.body.textContent || '';
-                    
-                    // Enhanced patterns with more variations
-                    var patterns = [
-                        // Now Playing with markdown bold
-                        /Now Playing\s*:\s*\*\*([^*]+?)\s*-\s*([^*]+)\*\*/i,
-                        // Now Playing without markdown
-                        /Now Playing\s*:\s*([^-\n]+?)\s*-\s*([^\n]+)/i,
-                        // Currently playing variations
-                        /Currently Playing\s*:\s*([^-\n]+?)\s*-\s*([^\n]+)/i,
-                        // Just "Playing:"
-                        /Playing\s*:\s*([^-\n]+?)\s*-\s*([^\n]+)/i,
-                        // Artist - Title format (generic, must be on its own line-ish)
-                        /\n([A-Z][A-Za-z\s&.,']+?)\s*-\s*([A-Z][A-Za-z\s0-9().']+)\n/
-                    ];
-                    
-                    for (var i = 0; i < patterns.length; i++) {
-                        var match = bodyText.match(patterns[i]);
-                        if (match && match[1] && match[2]) {
-                            var artist = match[1].trim();
-                            var title = match[2].trim();
-                            
-                            // Validate: artist and title should be reasonable length
-                            if (artist.length > 1 && artist.length < 100 && 
-                                title.length > 1 && title.length < 200) {
-                                console.log('Matched pattern ' + i + ': ' + artist + ' - ' + title);
-                                updateTrackDisplay(title, artist);
+                    // Try to parse as JSON first
+                    try {
+                        var json = JSON.parse(data);
+                        if (json.icestats && json.icestats.source) {
+                            var source = json.icestats.source;
+                            var title = source.title || source.stream_title || '';
+                            if (title && title.includes(' - ')) {
+                                var parts = title.split(' - ');
+                                console.log('Found metadata from stats JSON:', parts[0], '-', parts[1]);
+                                updateTrackDisplay(parts[1].trim(), parts[0].trim());
+                                return;
+                            }
+                        }
+                    } catch (e) {
+                        // Not JSON, try XML/text parsing
+                        var titleMatch = data.match(/<title>([^<]+)<\/title>/i) || 
+                                       data.match(/stream_title["\s:]+([^"\n]+)/i);
+                        if (titleMatch && titleMatch[1]) {
+                            var title = titleMatch[1].trim();
+                            if (title.includes(' - ')) {
+                                var parts = title.split(' - ');
+                                console.log('Found metadata from stats XML:', parts[0], '-', parts[1]);
+                                updateTrackDisplay(parts[1].trim(), parts[0].trim());
                                 return;
                             }
                         }
                     }
                     
-                    // Method 3: Fallback - look for any Artist - Title pattern
-                    var fallbackMatch = bodyText.match(/([A-Z][^-\n]{2,50})\s*-\s*([A-Z][^\n]{2,100})/);
-                    if (fallbackMatch && fallbackMatch[1] && fallbackMatch[2]) {
-                        console.log('Fallback match:', fallbackMatch[1], '-', fallbackMatch[2]);
-                        updateTrackDisplay(fallbackMatch[2].trim(), fallbackMatch[1].trim());
-                        return;
-                    }
-                    
-                    console.warn('Could not parse track info from internet-radio.com');
-                    updateTrackDisplay('Classic Rock', station.name);
+                    // Stats didn't work, try page scraping
+                    tryPageScraping();
                 })
                 .catch(function(error) {
-                    console.warn('Proxy #' + (proxyIndex + 1) + ' failed:', error.message);
-                    // Try next proxy
+                    console.warn('Stats endpoint failed:', error.message);
                     proxyIndex++;
                     if (proxyIndex < corsProxies.length) {
-                        setTimeout(tryFetchWithProxy, 500);
+                        setTimeout(tryStatsEndpoint, 500);
                     } else {
-                        updateTrackDisplay('Classic Rock', station.name);
+                        tryPageScraping();
                     }
                 });
         }
         
-        tryFetchWithProxy();
+        function tryPageScraping() {
+            // Fallback: scrape the station page
+            var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/';
+            var corsProxy = 'https://corsproxy.io/?';
+            var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
+            
+            console.log('Falling back to page scraping');
+            
+            fetch(proxiedUrl)
+                .then(function(response) {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.text();
+                })
+                .then(function(html) {
+                    console.log('Received page HTML (' + html.length + ' bytes)');
+                    
+                    // Parse HTML and look for the most recent track info
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(html, 'text/html');
+                    var bodyText = doc.body.textContent || '';
+                    
+                    // Look for the FIRST occurrence of "Now Playing:" which should be current
+                    var nowPlayingMatch = bodyText.match(/Now\s+Playing\s*:\s*\*\*([^*]+)\*\*/i);
+                    if (nowPlayingMatch && nowPlayingMatch[1]) {
+                        var trackInfo = nowPlayingMatch[1].trim();
+                        if (trackInfo.includes(' - ')) {
+                            var parts = trackInfo.split(' - ');
+                            console.log('Found current track from page:', parts[0], '-', parts[1]);
+                            updateTrackDisplay(parts[1].trim(), parts[0].trim());
+                            return;
+                        }
+                    }
+                    
+                    console.warn('Could not find current track metadata');
+                    updateTrackDisplay('Classic Rock', station.name);
+                })
+                .catch(function(error) {
+                    console.error('Page scraping failed:', error.message);
+                    updateTrackDisplay('Classic Rock', station.name);
+                });
+        }
+        
+        // Start with stats endpoint
+        tryStatsEndpoint();
     }
     
     function parseAndDisplayTrack(trackInfo, stationName) {
