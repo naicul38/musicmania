@@ -166,65 +166,117 @@
     }
     
     function fetchInternetRadioMetadata(station) {
-        // Scrape the station page for "Now Playing" info
-        var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/';
-        var corsProxy = 'https://corsproxy.io/?';
-        var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
+        // Try to get metadata from the Shoutcast/Icecast stream's status endpoint first
+        var statusEndpoints = [
+            'https://us3.internet-radio.com/proxy/' + station.channel + '/status-json.xsl',
+            'https://us3.internet-radio.com/proxy/' + station.channel + '/stats',
+            'https://us3.internet-radio.com/proxy/' + station.channel + '/status.xsl'
+        ];
         
-        fetch(proxiedUrl)
-            .then(function(response) {
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                return response.text();
-            })
-            .then(function(html) {
-                // Parse HTML
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(html, 'text/html');
-                
-                // Target the specific XPath: /html/body/div[1]/div/div[1]/p/b/span
-                // Equivalent selector: body > div:first-of-type > div > div:first-of-type > p > b > span
-                var metadataElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
-                
-                if (metadataElement) {
-                    var trackInfo = metadataElement.textContent.trim();
-                    console.log('Found metadata from XPath:', trackInfo);
+        var corsProxy = 'https://corsproxy.io/?';
+        var endpointIndex = 0;
+        
+        function tryStatusEndpoint() {
+            if (endpointIndex >= statusEndpoints.length) {
+                // All status endpoints failed, fallback to page scraping
+                fallbackToPageScraping();
+                return;
+            }
+            
+            var statusUrl = statusEndpoints[endpointIndex];
+            var proxiedUrl = corsProxy + encodeURIComponent(statusUrl);
+            
+            console.log('Trying status endpoint:', statusUrl);
+            
+            fetch(proxiedUrl, { cache: 'no-cache' })
+                .then(function(response) {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.text();
+                })
+                .then(function(data) {
+                    console.log('Status endpoint response:', data.substring(0, 300));
                     
-                    // Split by " - " to get artist and title
-                    if (trackInfo.includes(' - ')) {
-                        var parts = trackInfo.split(' - ');
-                        var artist = parts[0].trim();
-                        var title = parts.slice(1).join(' - ').trim(); // In case title has " - " in it
+                    // Try JSON parsing
+                    try {
+                        var json = JSON.parse(data);
+                        var title = json.songtitle || json.title || json.icestats?.source?.title || '';
                         
-                        updateTrackDisplay(title, artist);
-                        return;
-                    } else {
-                        // No separator, show as-is
-                        updateTrackDisplay(trackInfo, station.name);
-                        return;
+                        if (title && title.trim()) {
+                            console.log('Found metadata from JSON:', title);
+                            parseAndDisplayTrackInfo(title);
+                            return;
+                        }
+                    } catch (e) {
+                        // Not JSON, try XML
+                        var xmlMatch = data.match(/<SONGTITLE>([^<]+)<\/SONGTITLE>/i) ||
+                                      data.match(/<title>([^<]+)<\/title>/i);
+                        if (xmlMatch && xmlMatch[1]) {
+                            console.log('Found metadata from XML:', xmlMatch[1]);
+                            parseAndDisplayTrackInfo(xmlMatch[1]);
+                            return;
+                        }
                     }
-                }
-                
-                // Fallback: try regex pattern
-                var match = html.match(/Now\s+Playing\s*:\s*\*\*([^*]+)\*\*/i);
-                if (match && match[1]) {
-                    var trackInfo = match[1].trim();
-                    console.log('Found metadata via regex fallback:', trackInfo);
                     
-                    if (trackInfo.includes(' - ')) {
-                        var parts = trackInfo.split(' - ');
-                        updateTrackDisplay(parts.slice(1).join(' - ').trim(), parts[0].trim());
+                    // This endpoint didn't work, try next
+                    endpointIndex++;
+                    setTimeout(tryStatusEndpoint, 300);
+                })
+                .catch(function(error) {
+                    console.warn('Status endpoint failed:', error.message);
+                    endpointIndex++;
+                    if (endpointIndex < statusEndpoints.length) {
+                        setTimeout(tryStatusEndpoint, 300);
                     } else {
-                        updateTrackDisplay(trackInfo, station.name);
+                        fallbackToPageScraping();
                     }
-                } else {
-                    console.warn('Could not find Now Playing metadata');
+                });
+        }
+        
+        function fallbackToPageScraping() {
+            console.log('Falling back to page scraping (may have stale data)');
+            var timestamp = new Date().getTime();
+            var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp;
+            var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
+            
+            fetch(proxiedUrl, { cache: 'no-cache' })
+                .then(function(response) {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.text();
+                })
+                .then(function(html) {
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(html, 'text/html');
+                    var metadataElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
+                    
+                    if (metadataElement) {
+                        var trackInfo = metadataElement.textContent.trim();
+                        console.log('Found metadata from page (may be stale):', trackInfo);
+                        parseAndDisplayTrackInfo(trackInfo);
+                    } else {
+                        console.warn('Could not find metadata');
+                        updateTrackDisplay('Classic Rock', station.name);
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Page scraping failed:', error.message);
                     updateTrackDisplay('Classic Rock', station.name);
-                }
-            })
-            .catch(function(error) {
-                console.error('Metadata fetch failed:', error.message);
-                updateTrackDisplay('Classic Rock', station.name);
-            });
+                });
+        }
+        
+        function parseAndDisplayTrackInfo(trackInfo) {
+            trackInfo = trackInfo.trim();
+            if (trackInfo.includes(' - ')) {
+                var parts = trackInfo.split(' - ');
+                var artist = parts[0].trim();
+                var title = parts.slice(1).join(' - ').trim();
+                updateTrackDisplay(title, artist);
+            } else {
+                updateTrackDisplay(trackInfo, station.name);
+            }
+        }
+        
+        // Start by trying status endpoints
+        tryStatusEndpoint();
     }
     
     function updateTrackDisplay(title, artist) {
