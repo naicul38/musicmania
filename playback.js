@@ -169,7 +169,7 @@
         // Fetch from internet-radio.com station page using CORS proxy
         var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/';
         
-        // List of CORS proxies to try (in order)
+        // List of CORS proxies to try (in order) - corsproxy.io is most reliable
         var corsProxies = [
             'https://corsproxy.io/?',
             'https://api.allorigins.win/raw?url=',
@@ -188,57 +188,84 @@
             var corsProxy = corsProxies[proxyIndex];
             var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
             
-            console.log('Trying CORS proxy #' + (proxyIndex + 1) + ':', proxiedUrl);
+            console.log('Fetching internet-radio.com metadata via proxy #' + (proxyIndex + 1));
             
-            fetch(proxiedUrl, { timeout: 10000 })
+            fetch(proxiedUrl)
                 .then(function(response) {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) throw new Error('Network response was not ok: ' + response.status);
+                    if (!response.ok) {
+                        throw new Error('HTTP ' + response.status);
+                    }
                     return response.text();
                 })
                 .then(function(html) {
-                    console.log('Received HTML, length:', html.length);
+                    console.log('Received HTML from internet-radio.com (' + html.length + ' bytes)');
                     
-                    // Try multiple parsing methods
+                    // Parse HTML
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(html, 'text/html');
                     
-                    // Method 1: Look for the "Now Playing" text pattern in markdown format
-                    var nowPlayingMatch = html.match(/Now Playing\s*:\s*\*\*([^*]+)\*\*/);
-                    
-                    if (nowPlayingMatch && nowPlayingMatch[1]) {
-                        console.log('Found match (Method 1):', nowPlayingMatch[1]);
-                        parseAndDisplayTrack(nowPlayingMatch[1].trim(), station.name);
+                    // Method 1: Try to find specific metadata elements
+                    var nowPlayingEl = doc.querySelector('.now-playing, .current-track, [class*="nowplaying"]');
+                    if (nowPlayingEl) {
+                        var trackText = nowPlayingEl.textContent.trim();
+                        console.log('Found now-playing element:', trackText);
+                        parseAndDisplayTrack(trackText, station.name);
                         return;
                     }
                     
-                    // Method 2: Parse HTML and look in the page
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(html, 'text/html');
-                    var bodyText = doc.body.textContent || doc.body.innerText || '';
+                    // Method 2: Search in body text for "Now Playing: **Artist - Title**"
+                    var bodyText = doc.body.textContent || '';
                     
-                    // Try different patterns
+                    // Enhanced patterns with more variations
                     var patterns = [
-                        /Now Playing\s*:\s*\*\*([^*]+)\*\*/,
-                        /Now Playing\s*:\s*([^\n]+)/i,
-                        /playing[:\s]+([^\n]+)/i
+                        // Now Playing with markdown bold
+                        /Now Playing\s*:\s*\*\*([^*]+?)\s*-\s*([^*]+)\*\*/i,
+                        // Now Playing without markdown
+                        /Now Playing\s*:\s*([^-\n]+?)\s*-\s*([^\n]+)/i,
+                        // Currently playing variations
+                        /Currently Playing\s*:\s*([^-\n]+?)\s*-\s*([^\n]+)/i,
+                        // Just "Playing:"
+                        /Playing\s*:\s*([^-\n]+?)\s*-\s*([^\n]+)/i,
+                        // Artist - Title format (generic, must be on its own line-ish)
+                        /\n([A-Z][A-Za-z\s&.,']+?)\s*-\s*([A-Z][A-Za-z\s0-9().']+)\n/
                     ];
                     
                     for (var i = 0; i < patterns.length; i++) {
                         var match = bodyText.match(patterns[i]);
-                        if (match && match[1]) {
-                            console.log('Found match (Method 2, pattern ' + i + '):', match[1]);
-                            parseAndDisplayTrack(match[1].trim(), station.name);
-                            return;
+                        if (match && match[1] && match[2]) {
+                            var artist = match[1].trim();
+                            var title = match[2].trim();
+                            
+                            // Validate: artist and title should be reasonable length
+                            if (artist.length > 1 && artist.length < 100 && 
+                                title.length > 1 && title.length < 200) {
+                                console.log('Matched pattern ' + i + ': ' + artist + ' - ' + title);
+                                updateTrackDisplay(title, artist);
+                                return;
+                            }
                         }
                     }
                     
-                    console.warn('Could not find "Now Playing" in response');
-                    updateTrackDisplay('Now Playing', station.name);
+                    // Method 3: Fallback - look for any Artist - Title pattern
+                    var fallbackMatch = bodyText.match(/([A-Z][^-\n]{2,50})\s*-\s*([A-Z][^\n]{2,100})/);
+                    if (fallbackMatch && fallbackMatch[1] && fallbackMatch[2]) {
+                        console.log('Fallback match:', fallbackMatch[1], '-', fallbackMatch[2]);
+                        updateTrackDisplay(fallbackMatch[2].trim(), fallbackMatch[1].trim());
+                        return;
+                    }
+                    
+                    console.warn('Could not parse track info from internet-radio.com');
+                    updateTrackDisplay('Classic Rock', station.name);
                 })
                 .catch(function(error) {
-                    console.error('CORS proxy #' + (proxyIndex + 1) + ' failed:', error);
+                    console.warn('Proxy #' + (proxyIndex + 1) + ' failed:', error.message);
                     // Try next proxy
                     proxyIndex++;
-                    setTimeout(tryFetchWithProxy, 1000); // Wait 1 second before trying next proxy
+                    if (proxyIndex < corsProxies.length) {
+                        setTimeout(tryFetchWithProxy, 500);
+                    } else {
+                        updateTrackDisplay('Classic Rock', station.name);
+                    }
                 });
         }
         
