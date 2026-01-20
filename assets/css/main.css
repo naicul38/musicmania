@@ -115,18 +115,18 @@
 }
 
 /* --------------------------------------------------------------------------
-   Theme: Rap - Urban Purple
+   Theme: Bossa - Tropical Coral
    -------------------------------------------------------------------------- */
-[data-theme="rap"] {
-    --primary: #7C3AED;
-    --primary-dark: #6D28D9;
-    --secondary: #C4B5FD;
-    --text: #4C1D95;
-    --text-muted: #6B21A8;
-    --bg-start: #FAF5FF;
-    --bg-end: #EDE9FE;
-    --disk-shadow: rgba(124, 58, 237, 0.4);
-    --halftone-color: rgba(124, 58, 237, 0.08);
+[data-theme="bossa"] {
+    --primary: #F97316;
+    --primary-dark: #EA580C;
+    --secondary: #FED7AA;
+    --text: #9A3412;
+    --text-muted: #C2410C;
+    --bg-start: #FFF7ED;
+    --bg-end: #FFEDD5;
+    --disk-shadow: rgba(249, 115, 22, 0.4);
+    --halftone-color: rgba(249, 115, 22, 0.08);
 }
 
 /* --------------------------------------------------------------------------
@@ -534,15 +534,15 @@ html {
     color: #78350F;
 }
 
-.floppy--rap {
-    --disk-color: #7C3AED;
-    --label-bg: #FAF5FF;
+.floppy--bossa {
+    --disk-color: #F97316;
+    --label-bg: #FFF7ED;
 }
 
-.floppy--rap .floppy__label-text {
-    font-family: 'Bebas Neue', sans-serif;
-    letter-spacing: 0.1em;
-    color: #4C1D95;
+.floppy--bossa .floppy__label-text {
+    font-family: 'Pacifico', cursive;
+    letter-spacing: 0.02em;
+    color: #9A3412;
 }
 
 /* --------------------------------------------------------------------------
@@ -775,7 +775,7 @@ html {
         font-size: 0.95rem;
     }
     
-    .floppy--rap .floppy__label-text {
+    .floppy--bossa .floppy__label-text {
         font-size: 0.85rem;
     }
     
@@ -850,7 +850,7 @@ html {
         font-size: 1.65rem;
     }
     
-    .floppy--rap .floppy__label-text {
+    .floppy--bossa .floppy__label-text {
         font-size: 1.5rem;
     }
     
@@ -908,7 +908,7 @@ html {
     .floppy {
         width: 75px;
         height: 75px;
-        margin-left: -35px;
+        margin-left: -28px;
         flex-shrink: 0;
                         }
     
@@ -982,8 +982,8 @@ html {
         font-size: 0.52rem;
     }
     
-    .floppy--rap .floppy__label-text {
-        font-size: 0.48rem;
+    .floppy--bossa .floppy__label-text {
+        font-size: 0.5rem;
     }
     
     .floppy__hole {
