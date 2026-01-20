@@ -52,8 +52,8 @@
     --bg-end: #D4F1EC;
     --disk-shadow: rgba(78, 205, 196, 0.4);
     --halftone-color: rgba(78, 205, 196, 0.08);
-}
-
+                }
+                
 /* --------------------------------------------------------------------------
    Theme: Rock - Bold Rebellion Red
    -------------------------------------------------------------------------- */
@@ -67,8 +67,8 @@
     --bg-end: #14253D;
     --disk-shadow: rgba(230, 57, 70, 0.5);
     --halftone-color: rgba(230, 57, 70, 0.1);
-}
-
+                }
+                
 /* --------------------------------------------------------------------------
    Theme: Party - Neon Club Nights
    -------------------------------------------------------------------------- */
@@ -112,8 +112,8 @@
     --bg-end: #FEF3C7;
     --disk-shadow: rgba(245, 158, 11, 0.4);
     --halftone-color: rgba(245, 158, 11, 0.08);
-}
-
+                }
+                
 /* --------------------------------------------------------------------------
    Theme: Bossa - Tropical Coral
    -------------------------------------------------------------------------- */
@@ -127,8 +127,8 @@
     --bg-end: #FFEDD5;
     --disk-shadow: rgba(249, 115, 22, 0.4);
     --halftone-color: rgba(249, 115, 22, 0.08);
-}
-
+                }
+                
 /* --------------------------------------------------------------------------
    Reset & Base Styles
    -------------------------------------------------------------------------- */
@@ -260,7 +260,7 @@ html {
 
 @keyframes onair-blink {
     0%, 100% {
-        opacity: 1;
+                        opacity: 1;
         box-shadow: 0 0 10px #FF006E;
     }
     50% {
@@ -281,7 +281,7 @@ html {
     background-image: radial-gradient(var(--halftone-color) 1px, transparent 1px);
     background-size: 8px 8px;
     transition: background-image var(--transition-theme);
-}
+                    }
 
 /* --------------------------------------------------------------------------
    Main Content Area
@@ -294,7 +294,7 @@ html {
     align-items: center;
     justify-content: center;
     padding: var(--space-md);
-    position: relative;
+                    position: relative;
     z-index: 1;
     gap: var(--space-lg);
 }
@@ -314,8 +314,8 @@ html {
     line-height: 1;
     color: var(--text);
     transition: color var(--transition-theme);
-}
-
+                }
+                
 .logo-accent {
     color: var(--primary);
     transition: color var(--transition-theme);
@@ -341,7 +341,7 @@ html {
     position: relative;
     height: 220px;
     padding: 0;
-    width: 100%;
+                    width: 100%;
     max-width: 100%;
     overflow: visible;
 }
@@ -367,8 +367,8 @@ html {
     box-shadow: 
         0 4px 16px rgba(0, 0, 0, 0.2),
         0 2px 6px rgba(0, 0, 0, 0.15);
-}
-
+                }
+                
 .floppy:first-child {
     margin-left: 0;
 }
@@ -387,8 +387,8 @@ html {
     box-shadow: 
         0 20px 40px rgba(0, 0, 0, 0.3),
         0 8px 16px rgba(0, 0, 0, 0.2);
-                    }
-
+                }
+                
 .floppy:active {
     transform: translateY(-10px) rotate(0deg) scale(1.02);
                     }
@@ -400,8 +400,8 @@ html {
         0 0 0 4px var(--primary),
         0 0 50px var(--disk-shadow),
         0 24px 48px rgba(0, 0, 0, 0.25);
-}
-
+                }
+                
 /* Metal slider at top */
 .floppy__slider {
                         position: absolute;
@@ -424,7 +424,7 @@ html {
     height: 10px;
     background: #555;
     border-radius: 2px;
-}
+                }
 
 /* Label area */
 .floppy__label {
@@ -439,14 +439,14 @@ html {
     align-items: center;
     justify-content: center;
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
-                }
+    }
                 
 .floppy__label-text {
     font-family: var(--font-display);
     font-size: 1.1rem;
     letter-spacing: 0.08em;
     color: var(--disk-color);
-}
+    }
 
 /* Hole cutout at bottom */
 .floppy__hole {
@@ -510,8 +510,8 @@ html {
     font-weight: 600;
     color: #2B2D42;
     letter-spacing: 0.02em;
-}
-
+                }
+                
 .floppy--chill {
     --disk-color: #9D8DF1;
     --label-bg: #F0EDFF;
@@ -543,8 +543,8 @@ html {
     font-family: 'Pacifico', cursive;
     letter-spacing: 0.02em;
     color: #9A3412;
-}
-
+                }
+                
 /* --------------------------------------------------------------------------
    Now Playing Display
    -------------------------------------------------------------------------- */
@@ -555,7 +555,7 @@ html {
     flex-direction: column;
     gap: var(--space-xs);
     max-width: 400px;
-}
+                }
 
 .now-playing__label {
     font-size: 0.625rem;
@@ -731,8 +731,8 @@ html {
         width: 70px;
         height: 16px;
         top: 10px;
-    }
-    
+                }
+                
     .floppy__slider::after {
         width: 22px;
         height: 8px;
@@ -757,8 +757,8 @@ html {
                 
     .floppy--cool .floppy__label-text {
         font-size: 0.85rem;
-    }
-    
+                }
+                
     .floppy--rock .floppy__label-text {
         font-size: 0.85rem;
                 }
@@ -769,8 +769,8 @@ html {
     
     .floppy--chill .floppy__label-text {
         font-size: 1.05rem;
-    }
-    
+                }
+                
     .floppy--funky .floppy__label-text {
         font-size: 0.95rem;
     }
@@ -824,7 +824,7 @@ html {
     
     .floppy__label-text {
         font-size: 1.6rem;
-    }
+                        }
     
     .floppy--lounge .floppy__label-text {
         font-size: 2rem;
@@ -832,7 +832,7 @@ html {
     
     .floppy--cool .floppy__label-text {
         font-size: 1.5rem;
-    }
+                        }
     
     .floppy--rock .floppy__label-text {
         font-size: 1.5rem;
@@ -840,25 +840,25 @@ html {
     
     .floppy--party .floppy__label-text {
         font-size: 1.65rem;
-    }
+                        }
     
     .floppy--chill .floppy__label-text {
         font-size: 1.85rem;
-                        }
+                    }
     
     .floppy--funky .floppy__label-text {
         font-size: 1.65rem;
-    }
+                    }
     
     .floppy--bossa .floppy__label-text {
         font-size: 1.5rem;
-    }
+                    }
     
     .floppy__hole {
         width: 48px;
         height: 17px;
         bottom: 20px;
-    }
+                        }
     
     .play-btn {
         width: 100px;
@@ -868,8 +868,8 @@ html {
     .play-btn__icon {
         width: 40px;
         height: 40px;
+                        }
                     }
-                }
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
@@ -910,7 +910,7 @@ html {
         height: 75px;
         margin-left: -28px;
         flex-shrink: 0;
-                        }
+                    }
     
     .floppy:first-child {
         margin-left: 0;
@@ -972,8 +972,8 @@ html {
     
     .floppy--party .floppy__label-text {
         font-size: 0.52rem;
-    }
-    
+                }
+                
     .floppy--chill .floppy__label-text {
         font-size: 0.58rem;
     }
