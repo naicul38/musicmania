@@ -92,7 +92,7 @@
         floppyDisks: null,
         html: null
     };
-    
+
     // ==========================================================================
     // Theme Management
     // ==========================================================================
@@ -119,8 +119,8 @@
         
         // Update theme
         setTheme(stations[index].theme);
-    }
-    
+}
+
     // ==========================================================================
     // Metadata Fetching (SomaFM API)
     // ==========================================================================
@@ -143,7 +143,7 @@
         } else {
             // Generic fallback
             updateTrackDisplay('Now Playing', station.name);
-        }
+}
     }
     
     function fetchSomaFMMetadata(station) {
@@ -166,117 +166,69 @@
     }
     
     function fetchInternetRadioMetadata(station) {
-        // Try to get metadata from the Shoutcast/Icecast stream's status endpoint first
-        var statusEndpoints = [
-            'https://us3.internet-radio.com/proxy/' + station.channel + '/status-json.xsl',
-            'https://us3.internet-radio.com/proxy/' + station.channel + '/stats',
-            'https://us3.internet-radio.com/proxy/' + station.channel + '/status.xsl'
-        ];
-        
+        // Fetch the station page and get metadata from the specific span element
+        var timestamp = new Date().getTime();
+        var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp;
         var corsProxy = 'https://corsproxy.io/?';
-        var endpointIndex = 0;
+        var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
         
-        function tryStatusEndpoint() {
-            if (endpointIndex >= statusEndpoints.length) {
-                // All status endpoints failed, fallback to page scraping
-                fallbackToPageScraping();
-                return;
+        fetch(proxiedUrl, { 
+            cache: 'no-cache',
+            headers: {
+                'Cache-Control': 'no-cache'
             }
-            
-            var statusUrl = statusEndpoints[endpointIndex];
-            var proxiedUrl = corsProxy + encodeURIComponent(statusUrl);
-            
-            console.log('Trying status endpoint:', statusUrl);
-            
-            fetch(proxiedUrl, { cache: 'no-cache' })
-                .then(function(response) {
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
-                    return response.text();
-                })
-                .then(function(data) {
-                    console.log('Status endpoint response:', data.substring(0, 300));
+        })
+            .then(function(response) {
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                return response.text();
+            })
+            .then(function(html) {
+                // Parse HTML
+                var parser = new DOMParser();
+                var doc = parser.parseFromString(html, 'text/html');
+                
+                // Target the specific span element: <span id="cc_strinfo_song_crplanet" class="cc_streaminfo">
+                var metadataElement = doc.getElementById('cc_strinfo_song_' + station.channel);
+                
+                if (metadataElement) {
+                    var trackInfo = metadataElement.textContent.trim();
+                    console.log('Found metadata:', trackInfo);
                     
-                    // Try JSON parsing
-                    try {
-                        var json = JSON.parse(data);
-                        var title = json.songtitle || json.title || json.icestats?.source?.title || '';
-                        
-                        if (title && title.trim()) {
-                            console.log('Found metadata from JSON:', title);
-                            parseAndDisplayTrackInfo(title);
-                            return;
-                        }
-                    } catch (e) {
-                        // Not JSON, try XML
-                        var xmlMatch = data.match(/<SONGTITLE>([^<]+)<\/SONGTITLE>/i) ||
-                                      data.match(/<title>([^<]+)<\/title>/i);
-                        if (xmlMatch && xmlMatch[1]) {
-                            console.log('Found metadata from XML:', xmlMatch[1]);
-                            parseAndDisplayTrackInfo(xmlMatch[1]);
-                            return;
-                        }
+                    // Split by " - " to get artist and title
+                    if (trackInfo && trackInfo.includes(' - ')) {
+                        var parts = trackInfo.split(' - ');
+                        var artist = parts[0].trim();
+                        var title = parts.slice(1).join(' - ').trim();
+                        updateTrackDisplay(title, artist);
+                        return;
+                    } else if (trackInfo) {
+                        updateTrackDisplay(trackInfo, station.name);
+                        return;
                     }
+                }
+                
+                // Fallback: try the old XPath location
+                var fallbackElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
+                if (fallbackElement) {
+                    var trackInfo = fallbackElement.textContent.trim();
+                    console.log('Found metadata from fallback location:', trackInfo);
                     
-                    // This endpoint didn't work, try next
-                    endpointIndex++;
-                    setTimeout(tryStatusEndpoint, 300);
-                })
-                .catch(function(error) {
-                    console.warn('Status endpoint failed:', error.message);
-                    endpointIndex++;
-                    if (endpointIndex < statusEndpoints.length) {
-                        setTimeout(tryStatusEndpoint, 300);
-                    } else {
-                        fallbackToPageScraping();
+                    if (trackInfo && trackInfo.includes(' - ')) {
+                        var parts = trackInfo.split(' - ');
+                        updateTrackDisplay(parts.slice(1).join(' - ').trim(), parts[0].trim());
+                    } else if (trackInfo) {
+                        updateTrackDisplay(trackInfo, station.name);
                     }
-                });
-        }
-        
-        function fallbackToPageScraping() {
-            console.log('Falling back to page scraping (may have stale data)');
-            var timestamp = new Date().getTime();
-            var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp;
-            var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
-            
-            fetch(proxiedUrl, { cache: 'no-cache' })
-                .then(function(response) {
-                    if (!response.ok) throw new Error('HTTP ' + response.status);
-                    return response.text();
-                })
-                .then(function(html) {
-                    var parser = new DOMParser();
-                    var doc = parser.parseFromString(html, 'text/html');
-                    var metadataElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
-                    
-                    if (metadataElement) {
-                        var trackInfo = metadataElement.textContent.trim();
-                        console.log('Found metadata from page (may be stale):', trackInfo);
-                        parseAndDisplayTrackInfo(trackInfo);
-                    } else {
-                        console.warn('Could not find metadata');
-                        updateTrackDisplay('Classic Rock', station.name);
-                    }
-                })
-                .catch(function(error) {
-                    console.error('Page scraping failed:', error.message);
-                    updateTrackDisplay('Classic Rock', station.name);
-                });
-        }
-        
-        function parseAndDisplayTrackInfo(trackInfo) {
-            trackInfo = trackInfo.trim();
-            if (trackInfo.includes(' - ')) {
-                var parts = trackInfo.split(' - ');
-                var artist = parts[0].trim();
-                var title = parts.slice(1).join(' - ').trim();
-                updateTrackDisplay(title, artist);
-            } else {
-                updateTrackDisplay(trackInfo, station.name);
-            }
-        }
-        
-        // Start by trying status endpoints
-        tryStatusEndpoint();
+                    return;
+                }
+                
+                console.warn('Could not find metadata element');
+                updateTrackDisplay('Classic Rock', station.name);
+            })
+            .catch(function(error) {
+                console.error('Metadata fetch failed:', error.message);
+                updateTrackDisplay('Classic Rock', station.name);
+            });
     }
     
     function updateTrackDisplay(title, artist) {
@@ -301,7 +253,7 @@
             elements.trackArtist.classList.remove('track-update');
             void elements.trackArtist.offsetWidth;
             elements.trackArtist.classList.add('track-update');
-        }
+    }
         
         // Update page title with now playing
         if (isPlaying && currentTrack.title) {
