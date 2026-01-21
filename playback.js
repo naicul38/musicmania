@@ -168,16 +168,28 @@
     
     function fetchInternetRadioMetadata(station) {
         // Fetch the station page and get metadata from the specific span element
-        // First fetch might return cached data, so we'll fetch again after 2 seconds
+        // Use alternating CORS proxies to avoid proxy-level caching
+        
+        var corsProxies = [
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?'
+        ];
+        var proxyIndex = 0;
+        var lastFetchedTrack = '';
         
         function doFetch(isFreshFetch) {
             var timestamp = new Date().getTime();
-            var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp;
-            var corsProxy = 'https://corsproxy.io/?';
+            var randomSuffix = Math.random().toString(36).substring(7);
+            var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp + '&r=' + randomSuffix;
+            
+            // Alternate between proxies to bypass proxy caching
+            var corsProxy = corsProxies[proxyIndex % corsProxies.length];
+            proxyIndex++;
+            
             var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
             
             if (isFreshFetch) {
-                console.log('Fetching fresh metadata (2nd attempt)...');
+                console.log('Fetching fresh metadata via alternate proxy...');
             }
             
             fetch(proxiedUrl, { 
@@ -201,6 +213,14 @@
                     
                     if (metadataElement) {
                         var trackInfo = metadataElement.textContent.trim();
+                        
+                        // Check if this is actually new metadata
+                        if (isFreshFetch && trackInfo === lastFetchedTrack) {
+                            console.log('Fresh fetch returned same metadata (proxy still cached), will update on next interval');
+                            return;
+                        }
+                        
+                        lastFetchedTrack = trackInfo;
                         console.log('Found metadata' + (isFreshFetch ? ' (fresh)' : '') + ':', trackInfo);
                         
                         // Split by " - " to get artist and title
@@ -220,6 +240,14 @@
                     var fallbackElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
                     if (fallbackElement) {
                         var trackInfo = fallbackElement.textContent.trim();
+                        
+                        // Check if this is actually new metadata
+                        if (isFreshFetch && trackInfo === lastFetchedTrack) {
+                            console.log('Fresh fetch returned same metadata (proxy still cached), will update on next interval');
+                            return;
+                        }
+                        
+                        lastFetchedTrack = trackInfo;
                         console.log('Found metadata from fallback location' + (isFreshFetch ? ' (fresh)' : '') + ':', trackInfo);
                         
                         if (trackInfo && trackInfo.includes(' - ')) {
@@ -239,17 +267,26 @@
                     }
                 })
                 .catch(function(error) {
-                    console.error('Metadata fetch failed:', error.message);
+                    console.error('Metadata fetch failed' + (isFreshFetch ? ' (fresh)' : '') + ':', error.message);
                     if (isFreshFetch) {
-                        updateTrackDisplay('Classic Rock', station.name);
+                        // Try again with next proxy on failure
+                        if (proxyIndex < corsProxies.length * 2) {
+                            setTimeout(function() {
+                                if (stations[currentStationIndex].channel === station.channel && isPlaying) {
+                                    doFetch(true);
+                                }
+                            }, 1000);
+                        } else {
+                            updateTrackDisplay('Classic Rock', station.name);
+                        }
                     }
                 });
         }
         
-        // First fetch (might be cached)
+        // First fetch
         doFetch(false);
         
-        // Second fetch after 2 seconds (should be fresh)
+        // Second fetch after 2 seconds with alternate proxy
         setTimeout(function() {
             // Only fetch again if we're still on the same station
             if (stations[currentStationIndex].channel === station.channel && isPlaying) {
