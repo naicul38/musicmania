@@ -79,6 +79,7 @@
     var metadataInterval = null;
     var currentTrack = { title: '', artist: '' };
     var isTransitioning = false; // Flag to prevent state conflicts during channel switch
+    var isInitialMetadataFetch = true; // Flag for aggressive fetching on channel switch
     
     // ==========================================================================
     // DOM References (cached after init)
@@ -140,7 +141,11 @@
         if (station.url.includes('somafm.com')) {
             fetchSomaFMMetadata(station);
         } else if (station.url.includes('internet-radio.com')) {
-            fetchInternetRadioMetadata(station);
+            fetchInternetRadioMetadata(station, isInitialMetadataFetch);
+            // Reset flag after initial fetch
+            if (isInitialMetadataFetch) {
+                isInitialMetadataFetch = false;
+            }
         } else {
             // Generic fallback
             updateTrackDisplay('Now Playing', station.name);
@@ -166,31 +171,36 @@
             });
     }
     
-    function fetchInternetRadioMetadata(station) {
+    function fetchInternetRadioMetadata(station, isInitialFetch) {
         // Fetch the station page and get metadata from the specific span element
-        // Use alternating CORS proxies to avoid proxy-level caching
+        // Use multiple CORS proxies to avoid proxy-level caching
         
         var corsProxies = [
+            'https://corsproxy.io/?',
             'https://api.allorigins.win/raw?url=',
-            'https://corsproxy.io/?'
+            'https://api.codetabs.com/v1/proxy?quest='
         ];
-        var proxyIndex = 0;
-        var lastFetchedTrack = '';
         
-        function doFetch(isFreshFetch) {
+        // Start with a different proxy each time to maximize freshness
+        var startProxyIndex = isInitialFetch ? 0 : 1;
+        var proxyIndex = startProxyIndex;
+        var lastFetchedTrack = '';
+        var attemptCount = 0;
+        var maxAttempts = 3;
+        
+        function doFetch(attemptNumber) {
+            attemptCount = attemptNumber || 1;
+            
+            // Always use fresh timestamp and random suffix for aggressive cache busting
             var timestamp = new Date().getTime();
             var randomSuffix = Math.random().toString(36).substring(7);
             var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp + '&r=' + randomSuffix;
             
-            // Alternate between proxies to bypass proxy caching
+            // Rotate through proxies
             var corsProxy = corsProxies[proxyIndex % corsProxies.length];
-            proxyIndex++;
-            
             var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
             
-            if (isFreshFetch) {
-                console.log('Fetching fresh metadata via alternate proxy...');
-            }
+            console.log('Fetching metadata (attempt ' + attemptCount + '/' + maxAttempts + ') via proxy #' + (proxyIndex % corsProxies.length + 1));
             
             // Don't send custom headers - some proxies reject them in preflight
             fetch(proxiedUrl, { 
@@ -211,14 +221,23 @@
                     if (metadataElement) {
                         var trackInfo = metadataElement.textContent.trim();
                         
-                        // Check if this is actually new metadata
-                        if (isFreshFetch && trackInfo === lastFetchedTrack) {
-                            console.log('Fresh fetch returned same metadata (proxy still cached), will update on next interval');
+                        // Check if this is actually new metadata (skip duplicate updates after first fetch)
+                        if (attemptCount > 1 && trackInfo === lastFetchedTrack) {
+                            console.log('Attempt ' + attemptCount + ' returned same metadata (proxy cached), will retry...');
+                            // Try next proxy after short delay
+                            if (attemptCount < maxAttempts) {
+                                proxyIndex++;
+                                setTimeout(function() {
+                                    if (stations[currentStationIndex].channel === station.channel && isPlaying) {
+                                        doFetch(attemptCount + 1);
+                                    }
+                                }, 800);
+                            }
                             return;
                         }
                         
                         lastFetchedTrack = trackInfo;
-                        console.log('Found metadata' + (isFreshFetch ? ' (fresh)' : '') + ':', trackInfo);
+                        console.log('✓ Found metadata (attempt ' + attemptCount + '):', trackInfo);
                         
                         // Split by " - " to get artist and title
                         if (trackInfo && trackInfo.includes(' - ')) {
@@ -238,14 +257,21 @@
                     if (fallbackElement) {
                         var trackInfo = fallbackElement.textContent.trim();
                         
-                        // Check if this is actually new metadata
-                        if (isFreshFetch && trackInfo === lastFetchedTrack) {
-                            console.log('Fresh fetch returned same metadata (proxy still cached), will update on next interval');
+                        if (attemptCount > 1 && trackInfo === lastFetchedTrack) {
+                            console.log('Attempt ' + attemptCount + ' (fallback) returned same metadata, will retry...');
+                            if (attemptCount < maxAttempts) {
+                                proxyIndex++;
+                                setTimeout(function() {
+                                    if (stations[currentStationIndex].channel === station.channel && isPlaying) {
+                                        doFetch(attemptCount + 1);
+                                    }
+                                }, 800);
+                            }
                             return;
                         }
                         
                         lastFetchedTrack = trackInfo;
-                        console.log('Found metadata from fallback location' + (isFreshFetch ? ' (fresh)' : '') + ':', trackInfo);
+                        console.log('✓ Found metadata from fallback (attempt ' + attemptCount + '):', trackInfo);
                         
                         if (trackInfo && trackInfo.includes(' - ')) {
                             var parts = trackInfo.split(' - ');
@@ -256,40 +282,46 @@
                         return;
                     }
                     
-                    if (!isFreshFetch) {
-                        console.warn('Could not find metadata element on first try');
-                    } else {
-                        console.warn('Could not find metadata element');
+                    console.warn('Could not find metadata element (attempt ' + attemptCount + ')');
+                    if (attemptCount >= maxAttempts) {
                         updateTrackDisplay('Classic Rock', station.name);
                     }
                 })
                 .catch(function(error) {
-                    console.error('Metadata fetch failed' + (isFreshFetch ? ' (fresh)' : '') + ':', error.message);
-                    if (isFreshFetch) {
-                        // Try again with next proxy on failure
-                        if (proxyIndex < corsProxies.length * 2) {
-                            setTimeout(function() {
-                                if (stations[currentStationIndex].channel === station.channel && isPlaying) {
-                                    doFetch(true);
-                                }
-                            }, 1000);
-                        } else {
-                            updateTrackDisplay('Classic Rock', station.name);
-                        }
+                    console.error('Metadata fetch failed (attempt ' + attemptCount + '):', error.message);
+                    
+                    // Try next proxy on failure
+                    if (attemptCount < maxAttempts) {
+                        proxyIndex++;
+                        setTimeout(function() {
+                            if (stations[currentStationIndex].channel === station.channel && isPlaying) {
+                                doFetch(attemptCount + 1);
+                            }
+                        }, 500);
+                    } else {
+                        updateTrackDisplay('Classic Rock', station.name);
                     }
                 });
         }
         
-        // First fetch
-        doFetch(false);
+        // Start fetching immediately
+        doFetch(1);
         
-        // Second fetch after 2 seconds with alternate proxy
-setTimeout(function() {
-            // Only fetch again if we're still on the same station
+        // Schedule second attempt with different proxy after 1 second
+        setTimeout(function() {
             if (stations[currentStationIndex].channel === station.channel && isPlaying) {
-                doFetch(true);
+                proxyIndex++;
+                doFetch(2);
             }
-        }, 2000);
+        }, 1000);
+        
+        // Schedule third attempt with yet another proxy after 2.5 seconds
+        setTimeout(function() {
+            if (stations[currentStationIndex].channel === station.channel && isPlaying) {
+                proxyIndex++;
+                doFetch(3);
+            }
+        }, 2500);
     }
     
     function updateTrackDisplay(title, artist) {
@@ -371,6 +403,9 @@ setTimeout(function() {
         // Set transition flag
         isTransitioning = true;
         
+        // Set initial metadata fetch flag for aggressive fetching
+        isInitialMetadataFetch = true;
+        
         // Stop current stream if playing (silent cleanup)
         if (audioElement) {
             stopMetadataUpdates();
@@ -387,7 +422,7 @@ setTimeout(function() {
         currentStationIndex = index;
         updateActiveState(index);
         
-        // Fetch metadata immediately for new station
+        // Fetch metadata immediately for new station with aggressive strategy
         fetchMetadata();
         
         // Create and configure new audio element
