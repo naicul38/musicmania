@@ -192,12 +192,9 @@
                 console.log('Fetching fresh metadata via alternate proxy...');
             }
             
+            // Don't send custom headers - some proxies reject them in preflight
             fetch(proxiedUrl, { 
-                cache: 'no-cache',
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache'
-                }
+                cache: 'no-cache'
             })
                 .then(function(response) {
                     if (!response.ok) throw new Error('HTTP ' + response.status);
@@ -287,7 +284,7 @@
         doFetch(false);
         
         // Second fetch after 2 seconds with alternate proxy
-        setTimeout(function() {
+setTimeout(function() {
             // Only fetch again if we're still on the same station
             if (stations[currentStationIndex].channel === station.channel && isPlaying) {
                 doFetch(true);
