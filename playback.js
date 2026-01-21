@@ -78,6 +78,7 @@
     var audioElement = null;
     var metadataInterval = null;
     var currentTrack = { title: '', artist: '' };
+    var isTransitioning = false; // Flag to prevent state conflicts during channel switch
     
     // ==========================================================================
     // DOM References (cached after init)
@@ -167,68 +168,94 @@
     
     function fetchInternetRadioMetadata(station) {
         // Fetch the station page and get metadata from the specific span element
-        var timestamp = new Date().getTime();
-        var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp;
-        var corsProxy = 'https://corsproxy.io/?';
-        var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
+        // First fetch might return cached data, so we'll fetch again after 2 seconds
         
-        fetch(proxiedUrl, { 
-            cache: 'no-cache',
-            headers: {
-                'Cache-Control': 'no-cache'
+        function doFetch(isFreshFetch) {
+            var timestamp = new Date().getTime();
+            var stationUrl = 'https://www.internet-radio.com/station/' + station.channel + '/?_=' + timestamp;
+            var corsProxy = 'https://corsproxy.io/?';
+            var proxiedUrl = corsProxy + encodeURIComponent(stationUrl);
+            
+            if (isFreshFetch) {
+                console.log('Fetching fresh metadata (2nd attempt)...');
             }
-        })
-            .then(function(response) {
-                if (!response.ok) throw new Error('HTTP ' + response.status);
-                return response.text();
+            
+            fetch(proxiedUrl, { 
+                cache: 'no-cache',
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                }
             })
-            .then(function(html) {
-                // Parse HTML
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(html, 'text/html');
-                
-                // Target the specific span element: <span id="cc_strinfo_song_crplanet" class="cc_streaminfo">
-                var metadataElement = doc.getElementById('cc_strinfo_song_' + station.channel);
-                
-                if (metadataElement) {
-                    var trackInfo = metadataElement.textContent.trim();
-                    console.log('Found metadata:', trackInfo);
+                .then(function(response) {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.text();
+                })
+                .then(function(html) {
+                    // Parse HTML
+                    var parser = new DOMParser();
+                    var doc = parser.parseFromString(html, 'text/html');
                     
-                    // Split by " - " to get artist and title
-                    if (trackInfo && trackInfo.includes(' - ')) {
-                        var parts = trackInfo.split(' - ');
-                        var artist = parts[0].trim();
-                        var title = parts.slice(1).join(' - ').trim();
-                        updateTrackDisplay(title, artist);
-                        return;
-                    } else if (trackInfo) {
-                        updateTrackDisplay(trackInfo, station.name);
+                    // Target the specific span element: <span id="cc_strinfo_song_crplanet" class="cc_streaminfo">
+                    var metadataElement = doc.getElementById('cc_strinfo_song_' + station.channel);
+                    
+                    if (metadataElement) {
+                        var trackInfo = metadataElement.textContent.trim();
+                        console.log('Found metadata' + (isFreshFetch ? ' (fresh)' : '') + ':', trackInfo);
+                        
+                        // Split by " - " to get artist and title
+                        if (trackInfo && trackInfo.includes(' - ')) {
+                            var parts = trackInfo.split(' - ');
+                            var artist = parts[0].trim();
+                            var title = parts.slice(1).join(' - ').trim();
+                            updateTrackDisplay(title, artist);
+                            return;
+                        } else if (trackInfo) {
+                            updateTrackDisplay(trackInfo, station.name);
+                            return;
+                        }
+                    }
+                    
+                    // Fallback: try the old XPath location
+                    var fallbackElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
+                    if (fallbackElement) {
+                        var trackInfo = fallbackElement.textContent.trim();
+                        console.log('Found metadata from fallback location' + (isFreshFetch ? ' (fresh)' : '') + ':', trackInfo);
+                        
+                        if (trackInfo && trackInfo.includes(' - ')) {
+                            var parts = trackInfo.split(' - ');
+                            updateTrackDisplay(parts.slice(1).join(' - ').trim(), parts[0].trim());
+                        } else if (trackInfo) {
+                            updateTrackDisplay(trackInfo, station.name);
+                        }
                         return;
                     }
-                }
-                
-                // Fallback: try the old XPath location
-                var fallbackElement = doc.querySelector('body > div:first-of-type > div > div:first-of-type > p > b > span');
-                if (fallbackElement) {
-                    var trackInfo = fallbackElement.textContent.trim();
-                    console.log('Found metadata from fallback location:', trackInfo);
                     
-                    if (trackInfo && trackInfo.includes(' - ')) {
-                        var parts = trackInfo.split(' - ');
-                        updateTrackDisplay(parts.slice(1).join(' - ').trim(), parts[0].trim());
-                    } else if (trackInfo) {
-                        updateTrackDisplay(trackInfo, station.name);
+                    if (!isFreshFetch) {
+                        console.warn('Could not find metadata element on first try');
+                    } else {
+                        console.warn('Could not find metadata element');
+                        updateTrackDisplay('Classic Rock', station.name);
                     }
-                    return;
-                }
-                
-                console.warn('Could not find metadata element');
-                updateTrackDisplay('Classic Rock', station.name);
-            })
-            .catch(function(error) {
-                console.error('Metadata fetch failed:', error.message);
-                updateTrackDisplay('Classic Rock', station.name);
-            });
+                })
+                .catch(function(error) {
+                    console.error('Metadata fetch failed:', error.message);
+                    if (isFreshFetch) {
+                        updateTrackDisplay('Classic Rock', station.name);
+                    }
+                });
+        }
+        
+        // First fetch (might be cached)
+        doFetch(false);
+        
+        // Second fetch after 2 seconds (should be fresh)
+        setTimeout(function() {
+            // Only fetch again if we're still on the same station
+            if (stations[currentStationIndex].channel === station.channel && isPlaying) {
+                doFetch(true);
+            }
+        }, 2000);
     }
     
     function updateTrackDisplay(title, artist) {
@@ -307,39 +334,62 @@
     function loadStation(index) {
         if (index < 0 || index >= stations.length) return;
         
-        // Stop current stream if playing
+        // Set transition flag
+        isTransitioning = true;
+        
+        // Stop current stream if playing (silent cleanup)
         if (audioElement) {
-            stopStream();
+            stopMetadataUpdates();
+            
+            // Remove all event listeners by cloning (prevents old events from firing)
+            var oldAudio = audioElement;
+            oldAudio.pause();
+            oldAudio.src = '';
+            oldAudio.load();
+            audioElement = null;
         }
         
-        // Update current station
+        // Update current station immediately
         currentStationIndex = index;
         updateActiveState(index);
         
         // Fetch metadata immediately for new station
         fetchMetadata();
         
-        // Create and configure audio
+        // Create and configure new audio element
         audioElement = new Audio();
         audioElement.preload = 'none';
         
-        // Event handlers
+        // Store reference for closure
+        var currentAudio = audioElement;
+        
+        // Event handlers with transition guard
         audioElement.addEventListener('playing', function() {
-            isPlaying = true;
-            updatePlayButton(true);
-            startMetadataUpdates();
+            // Only update if this is still the current audio element
+            if (currentAudio === audioElement && !isTransitioning) {
+                isPlaying = true;
+                updatePlayButton(true);
+                startMetadataUpdates();
+            }
         });
         
         audioElement.addEventListener('pause', function() {
-            isPlaying = false;
-            updatePlayButton(false);
+            // Only update if this is still the current audio element and not transitioning
+            if (currentAudio === audioElement && !isTransitioning) {
+                isPlaying = false;
+                updatePlayButton(false);
+            }
         });
         
         audioElement.addEventListener('error', function(e) {
-            console.warn('Stream error:', e);
-            isPlaying = false;
-            updatePlayButton(false);
-            stopMetadataUpdates();
+            // Only update if this is still the current audio element
+            if (currentAudio === audioElement) {
+                console.warn('Stream error:', e);
+                isPlaying = false;
+                updatePlayButton(false);
+                stopMetadataUpdates();
+                isTransitioning = false;
+            }
         });
         
         audioElement.addEventListener('stalled', function() {
@@ -352,13 +402,22 @@
         var playPromise = audioElement.play();
         if (playPromise !== undefined) {
             playPromise.then(function() {
-                isPlaying = true;
-                updatePlayButton(true);
+                // Clear transition flag once playback starts
+                isTransitioning = false;
+                if (currentAudio === audioElement) {
+                    isPlaying = true;
+                    updatePlayButton(true);
+                }
             }).catch(function(error) {
                 console.warn('Autoplay prevented:', error);
-                isPlaying = false;
-                updatePlayButton(false);
+                isTransitioning = false;
+                if (currentAudio === audioElement) {
+                    isPlaying = false;
+                    updatePlayButton(false);
+                }
             });
+        } else {
+            isTransitioning = false;
         }
     }
     
@@ -371,7 +430,9 @@
             audioElement.load();
             audioElement = null;
         }
+        
         isPlaying = false;
+        isTransitioning = false;
         updatePlayButton(false);
         clearTrackDisplay();
     }
