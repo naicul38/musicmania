@@ -1,0 +1,454 @@
+/* ==========================================================================
+   LIVE STAGE & BROADCAST STUDIO - Neobrutalist
+   Builds on tokens and primitives from assets/css/main.css
+   ========================================================================== */
+
+.stage-app {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 96px 16px 190px;
+    overflow: hidden;
+}
+
+.camera-feed {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 2;
+    opacity: 0;
+    transition: opacity 300ms var(--ease-out);
+}
+
+.camera-feed.active {
+    opacity: 1;
+}
+
+.stage-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+}
+
+/* --------------------------------------------------------------------------
+   Top chrome
+   -------------------------------------------------------------------------- */
+
+.stage-back-btn {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    left: max(16px, env(safe-area-inset-left));
+    z-index: 15;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    justify-content: center;
+    background: var(--accent-2);
+    border-radius: var(--radius);
+    text-decoration: none;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.stage-back-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+}
+
+.stage-back-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+.stage-back-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+.stage-status {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    right: max(16px, env(safe-area-inset-right));
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+}
+
+.stage-status-dot {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--ink);
+    border-radius: 50%;
+    background: #9A9A9A;
+}
+
+.stage-status.live {
+    background: var(--danger);
+}
+
+.stage-status.live .stage-status-dot {
+    background: #FFF;
+    animation: blink 1s steps(1) infinite;
+}
+
+.dj-name {
+    position: absolute;
+    top: max(84px, calc(env(safe-area-inset-top) + 72px));
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    width: fit-content;
+    max-width: calc(100% - 32px);
+    padding: 8px 22px 10px;
+    background: var(--accent);
+    font-family: var(--font-display);
+    font-size: clamp(1.2rem, 4.5vw, 1.8rem);
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transform: rotate(-2deg);
+}
+
+.dj-name__label {
+    display: block;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-align: center;
+}
+
+/* --------------------------------------------------------------------------
+   Visualizer
+   -------------------------------------------------------------------------- */
+
+.stage-equalizer {
+    position: absolute;
+    bottom: max(36px, calc(env(safe-area-inset-bottom) + 20px));
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 124px;
+    padding: 12px 16px;
+    background: var(--accent-2);
+}
+
+.stage-eq-bar {
+    width: 14px;
+    height: 30px;
+    max-height: 100%;
+    background: var(--accent);
+    border: 2px solid var(--ink);
+    animation: eq-idle 1.2s steps(6) infinite;
+    transition: height 80ms linear;
+}
+
+.stage-eq-bar:nth-child(2), .stage-eq-bar:nth-child(7) { animation-delay: -0.2s; }
+.stage-eq-bar:nth-child(3), .stage-eq-bar:nth-child(6) { animation-delay: -0.4s; }
+.stage-eq-bar:nth-child(4), .stage-eq-bar:nth-child(5) { animation-delay: -0.6s; }
+
+@keyframes eq-idle {
+    0%, 100% { height: 20px; }
+    50% { height: 48px; }
+}
+
+/* --------------------------------------------------------------------------
+   Empty stage (viewer)
+   -------------------------------------------------------------------------- */
+
+.empty-stage {
+    position: relative;
+    z-index: 5;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.empty-stage-content {
+    width: 100%;
+    max-width: 460px;
+    text-align: center;
+    padding: 44px 28px;
+    animation: pop-in 360ms var(--ease-out) backwards;
+}
+
+.empty-stage-icon {
+    display: grid;
+    place-items: center;
+    width: 84px;
+    height: 84px;
+    margin: 0 auto 24px;
+    background: var(--accent);
+    border: var(--border);
+    border-radius: 50%;
+    box-shadow: var(--shadow);
+    transform: rotate(-8deg);
+}
+
+.empty-stage-icon svg {
+    width: 38px;
+    height: 38px;
+}
+
+.empty-stage-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 6.5vw, 2.3rem);
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+}
+
+.empty-stage-text {
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 28px;
+}
+
+.empty-stage-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   Broadcast controls
+   -------------------------------------------------------------------------- */
+
+.stage-controls {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 480px;
+    padding: 32px 28px;
+    transition: opacity var(--dur-med) var(--ease-out), transform var(--dur-med) var(--ease-out);
+    animation: pop-in 360ms var(--ease-out) backwards;
+}
+
+.stage-controls.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px);
+}
+
+.stage-controls-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.stage-eyebrow {
+    align-self: center;
+    padding: 3px 12px;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+}
+
+.stage-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.8rem, 7vw, 2.4rem);
+    line-height: 1;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 3px 3px 0 var(--accent);
+}
+
+.stage-subtitle {
+    text-align: center;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: -6px;
+}
+
+.stage-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.stage-label {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.stage-input {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    background: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--ink);
+    outline: none;
+    transition: box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.stage-input::placeholder {
+    color: #777;
+}
+
+.stage-input:focus {
+    background: color-mix(in srgb, var(--accent-2) 25%, var(--surface));
+    box-shadow: var(--shadow-sm);
+}
+
+.stage-btn {
+    width: 100%;
+    min-height: 52px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.stage-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.stage-btn:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--ink);
+}
+
+.stage-btn:active:not(:disabled) {
+    transform: translate(3px, 3px);
+    box-shadow: none;
+}
+
+.stage-btn:disabled {
+    cursor: not-allowed;
+    background: #E0E0E0;
+    color: #666;
+    border-style: dashed;
+    box-shadow: none;
+}
+
+.stage-btn--camera { background: var(--surface); }
+.stage-btn--camera.is-on { background: var(--accent-2); }
+.stage-btn--primary { background: var(--accent); }
+
+.stage-btn--danger {
+    position: fixed;
+    z-index: 16;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    bottom: max(184px, calc(env(safe-area-inset-bottom) + 170px));
+    width: fit-content;
+    padding: 12px 24px;
+    background: var(--danger);
+    box-shadow: var(--shadow);
+}
+
+.stage-divider {
+    height: 0;
+    border-top: 3px dashed var(--ink);
+    margin: 4px 0;
+}
+
+.stage-links {
+    display: flex;
+    justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   Toast / error
+   -------------------------------------------------------------------------- */
+
+.stage-error {
+    position: fixed;
+    top: max(80px, calc(env(safe-area-inset-top) + 68px));
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    z-index: 20;
+    width: min(480px, calc(100% - 32px));
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 8px 8px 14px;
+    background: var(--danger);
+    animation: pop-in 220ms var(--ease-out);
+}
+
+.stage-error-icon svg {
+    width: 24px;
+    height: 24px;
+    display: block;
+}
+
+.stage-error-text {
+    flex: 1;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.stage-error-close {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    background: var(--surface);
+    border: var(--border);
+    border-radius: var(--radius);
+}
+
+.stage-error-close:hover {
+    background: var(--accent-2);
+}
+
+.stage-error-close svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 600px) {
+    .stage-controls { padding: 26px 18px; }
+    .stage-equalizer { gap: 5px; height: 104px; padding: 10px 12px; }
+    .stage-eq-bar { width: 11px; }
+}

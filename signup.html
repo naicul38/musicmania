@@ -1,0 +1,228 @@
+<!DOCTYPE HTML>
+<html lang="en" data-theme="party">
+
+<head>
+    <title>Book Live Session - Vicetream FM</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Book your live DJ session on Vicetream FM" />
+    <meta name="theme-color" content="#FFF4E0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+
+    <style>
+        .booking-header {
+            text-align: center;
+            max-width: 640px;
+            margin: var(--space-lg) auto;
+            animation: pop-in 360ms var(--ease-out) backwards;
+        }
+
+        .booking-header h1 {
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: clamp(2.4rem, 8vw, 4rem);
+            line-height: 0.95;
+            text-transform: uppercase;
+            margin: 18px 0 16px;
+        }
+
+        .booking-header .accent {
+            display: inline-block;
+            padding: 0 10px;
+            background: var(--accent);
+            border: var(--border);
+            box-shadow: var(--shadow);
+            transform: rotate(-2deg);
+        }
+
+        .booking-header p {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 3px 12px;
+            background: var(--ink);
+            color: var(--paper);
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        .booking-container {
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+        }
+
+        .info-card {
+            padding: var(--space-md);
+            animation: pop-in 360ms var(--ease-out) backwards;
+            animation-delay: calc(100ms + var(--i, 0) * 70ms);
+        }
+
+        .info-card:nth-child(2) { background: var(--accent-2); }
+
+        .info-card h2 {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-display);
+            font-weight: 400;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .info-card__icon {
+            display: grid;
+            place-items: center;
+            width: 42px;
+            height: 42px;
+            background: var(--accent);
+            border: var(--border);
+            border-radius: var(--radius);
+        }
+
+        .info-card__icon svg { width: 20px; height: 20px; }
+
+        .info-card ul { list-style: none; }
+
+        .info-card li {
+            position: relative;
+            padding: 7px 0 7px 28px;
+            font-weight: 500;
+        }
+
+        .info-card li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 12px;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border: 2px solid var(--ink);
+        }
+
+        .form-container {
+            padding: 10px;
+            margin-bottom: var(--space-lg);
+            animation: pop-in 360ms var(--ease-out) 240ms backwards;
+        }
+
+        #formpage {
+            width: 100%;
+            border: 0;
+            border-radius: var(--radius);
+            display: block;
+            background: #fff;
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            margin-bottom: var(--space-md);
+        }
+
+        @media (max-width: 768px) {
+            #formpage { height: 1200px; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app">
+        <header class="topbar card">
+            <a href="index.html" class="brand" aria-label="Vicetream FM home">
+                <span class="brand__mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
+                </span>
+                <span class="brand__name">Vicetream<span class="brand__accent">FM</span></span>
+            </a>
+            <nav class="topbar__nav" aria-label="Primary">
+                <a href="index.html" class="btn btn--ghost">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    <span>Radio</span>
+                </a>
+            </nav>
+        </header>
+
+        <main class="booking-container">
+            <div class="booking-header">
+                <span class="eyebrow">Live sessions</span>
+                <h1>Book your <span class="accent">live set</span></h1>
+                <p>Ready to broadcast your set to the world? Schedule your performance and we'll get you set up.</p>
+            </div>
+
+            <div class="info-cards">
+                <section class="info-card card" style="--i:0">
+                    <h2>
+                        <span class="info-card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                        </span>
+                        What you need
+                    </h2>
+                    <ul>
+                        <li>Audio stream URL (MP3/AAC)</li>
+                        <li>Webcam for live video</li>
+                        <li>Stable internet connection</li>
+                        <li>Your best tracks ready</li>
+                    </ul>
+                </section>
+
+                <section class="info-card card" style="--i:1">
+                    <h2>
+                        <span class="info-card__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>
+                        </span>
+                        After booking
+                    </h2>
+                    <ul>
+                        <li>We'll confirm your time slot</li>
+                        <li>You'll receive a broadcast link</li>
+                        <li>Go live at your scheduled time</li>
+                        <li>Listeners find you on the Live Stage</li>
+                    </ul>
+                </section>
+            </div>
+
+            <div class="form-container card card--raised">
+                <iframe
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSdrZDd6J4s_8vzVzXjwQ52tjlyozlJRKLCok57NDj8iuszr1g/viewform?embedded=true"
+                    width="100%"
+                    height="1346"
+                    title="Live session booking form"
+                    loading="lazy"
+                    id="formpage">
+                    Loading…
+                </iframe>
+            </div>
+
+            <div class="action-buttons">
+                <a href="index.html" class="btn btn--ghost">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                    Back to radio
+                </a>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

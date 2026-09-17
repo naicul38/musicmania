@@ -1,0 +1,185 @@
+<!DOCTYPE HTML>
+<html lang="en" data-theme="lounge">
+
+<head>
+    <title>Vicetream FM</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Stream curated radio stations - Lounge, Rock, Party, Chill, Funky, and Bossa music" />
+    <meta name="theme-color" content="#FFF4E0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://ice1.somafm.com" />
+    <link rel="preconnect" href="https://somafm.com" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+
+    <script defer src="playback.js"></script>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateOnAirButton() {
+                var isLive = false;
+                try { isLive = localStorage.getItem('vicetream_live_status') === 'true'; } catch (e) {}
+                var onairBtn = document.querySelector('.onair-btn');
+                if (onairBtn) {
+                    onairBtn.classList.toggle('live', isLive);
+                    onairBtn.querySelector('.onair-text').textContent = isLive ? 'On Air' : 'Off Air';
+                }
+            }
+
+            updateOnAirButton();
+            setInterval(updateOnAirButton, 5000);
+        });
+    </script>
+</head>
+
+<body>
+
+    <div class="app">
+        <header class="topbar card">
+            <a href="index.html" class="brand" aria-label="Vicetream FM home">
+                <span class="brand__mark" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>
+                </span>
+                <span class="brand__name">Vicetream<span class="brand__accent">FM</span></span>
+            </a>
+
+            <nav class="topbar__nav" aria-label="Primary">
+                <a href="stage.html" class="onair-btn" title="Go to Live Stage">
+                    <span class="onair-indicator" aria-hidden="true"></span>
+                    <span class="onair-text">Off Air</span>
+                </a>
+                <a href="signup.html" class="btn btn--ghost topbar__cta" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                    <span>Book a live set</span>
+                </a>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <section class="player card card--raised" aria-label="Player">
+                <div class="player__art">
+                    <div class="disc" aria-hidden="true">
+                        <div class="disc__label">
+                            <span class="disc__label-text" id="discLabel">Lounge</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="player__body">
+                    <div class="now-playing">
+                        <span class="now-playing__label">
+                            <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+                            <span class="now-playing__status">Now playing</span>
+                        </span>
+                        <h1 class="now-playing__station" id="stationName">Lounge</h1>
+                        <div class="track-info" id="trackInfo" aria-live="polite">
+                            <span class="track-info__title" id="trackTitle">—</span>
+                            <span class="track-info__artist" id="trackArtist"></span>
+                        </div>
+                    </div>
+
+                    <div class="player__controls">
+                        <button class="play-btn" id="playbackButton" aria-label="Play">
+                            <svg class="play-btn__icon play-btn__icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M8 5.14v13.72a1 1 0 0 0 1.52.85l10.8-6.86a1 1 0 0 0 0-1.7L9.52 4.29A1 1 0 0 0 8 5.14z"/>
+                            </svg>
+                            <svg class="play-btn__icon play-btn__icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/>
+                            </svg>
+                            <svg class="play-btn__icon play-btn__icon--loading" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true">
+                                <path d="M21 12a9 9 0 1 1-6.2-8.56"/>
+                            </svg>
+                        </button>
+                        <p class="player__hint">
+                            <kbd>Space</kbd> play/stop · <kbd>←</kbd><kbd>→</kbd> switch · <kbd>1</kbd>–<kbd>6</kbd> jump
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stations" aria-labelledby="stationsHeading">
+                <h2 class="section-title" id="stationsHeading">Stations</h2>
+                <div class="floppy-stack station-grid">
+                    <button class="floppy station active" data-stream="0" data-theme="lounge" aria-pressed="true" style="--i:0">
+                        <span class="station__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8M12 11v11M3 3h18l-9 8z"/></svg>
+                        </span>
+                        <span class="station__text">
+                            <span class="station__name">Lounge</span>
+                            <span class="station__genre">Downtempo grooves</span>
+                        </span>
+                        <span class="eq station__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+
+                    <button class="floppy station" data-stream="1" data-theme="rock" aria-pressed="false" style="--i:1">
+                        <span class="station__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        </span>
+                        <span class="station__text">
+                            <span class="station__name">Rock</span>
+                            <span class="station__genre">Classic rock anthems</span>
+                        </span>
+                        <span class="eq station__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+
+                    <button class="floppy station" data-stream="2" data-theme="party" aria-pressed="false" style="--i:2">
+                        <span class="station__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3z"/></svg>
+                        </span>
+                        <span class="station__text">
+                            <span class="station__name">Party</span>
+                            <span class="station__genre">Deep house &amp; beats</span>
+                        </span>
+                        <span class="eq station__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+
+                    <button class="floppy station" data-stream="3" data-theme="chill" aria-pressed="false" style="--i:3">
+                        <span class="station__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9z"/></svg>
+                        </span>
+                        <span class="station__text">
+                            <span class="station__name">Chill</span>
+                            <span class="station__genre">Ambient drift</span>
+                        </span>
+                        <span class="eq station__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+
+                    <button class="floppy station" data-stream="4" data-theme="funky" aria-pressed="false" style="--i:4">
+                        <span class="station__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><path d="M12 2a10 10 0 0 1 10 10"/></svg>
+                        </span>
+                        <span class="station__text">
+                            <span class="station__name">Funky</span>
+                            <span class="station__genre">Vintage soul 45s</span>
+                        </span>
+                        <span class="eq station__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+
+                    <button class="floppy station" data-stream="5" data-theme="bossa" aria-pressed="false" style="--i:5">
+                        <span class="station__icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                        </span>
+                        <span class="station__text">
+                            <span class="station__name">Bossa</span>
+                            <span class="station__genre">Brazilian bossa nova</span>
+                        </span>
+                        <span class="eq station__eq" aria-hidden="true"><i></i><i></i><i></i></span>
+                    </button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer">
+            <span>© Vicetream FM</span>
+            <a href="stage.html" class="footer__link">Live stage</a>
+            <a href="signup.html" class="footer__link" target="_blank" rel="noopener">Book a live event</a>
+        </footer>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html lang="en" data-theme="party">
+
+<head>
+    <title>Broadcast Studio - Vicetream FM</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Broadcast your live DJ set on Vicetream FM" />
+    <meta name="theme-color" content="#FFF4E0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="stage.css" />
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+
+    <script defer src="stage.js"></script>
+</head>
+
+<body>
+
+    <div class="stage-app">
+        <!-- Video Feed (Broadcaster Camera) -->
+        <video id="cameraFeed" class="camera-feed" autoplay playsinline muted></video>
+
+        <!-- Audio Stream -->
+        <audio id="streamAudio" crossorigin="anonymous"></audio>
+
+        <div class="stage-overlay">
+            <div class="stage-equalizer card" id="equalizer" aria-hidden="true">
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+            </div>
+
+            <div class="stage-status card" id="statusBadge" role="status">
+                <span class="stage-status-dot" aria-hidden="true"></span>
+                <span class="stage-status-text">OFFLINE</span>
+            </div>
+        </div>
+
+        <a href="index.html" class="stage-back-btn card" aria-label="Back to radio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+
+        <!-- Controls Panel -->
+        <div class="stage-controls card card--raised" id="controlsPanel">
+            <div class="stage-controls-inner">
+                <span class="stage-eyebrow">Studio</span>
+                <h1 class="stage-title">Broadcast Studio</h1>
+                <p class="stage-subtitle">Set up your stream, turn on the camera, go live.</p>
+
+                <div class="stage-input-group">
+                    <label class="stage-label" for="djNameInput">Your DJ name</label>
+                    <input
+                        type="text"
+                        id="djNameInput"
+                        class="stage-input"
+                        placeholder="DJ Cool Vibes"
+                        maxlength="30"
+                        autocomplete="nickname"
+                    />
+                </div>
+
+                <div class="stage-input-group">
+                    <label class="stage-label" for="streamUrl">Stream URL</label>
+                    <input
+                        type="url"
+                        id="streamUrl"
+                        class="stage-input"
+                        placeholder="https://your-stream.com/audio.mp3"
+                        inputmode="url"
+                    />
+                </div>
+
+                <button id="cameraBtn" class="stage-btn stage-btn--camera" type="button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 8-6 4 6 4V8z"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+                    <span class="stage-btn__label">Enable Camera</span>
+                </button>
+
+                <button id="goLiveBtn" class="stage-btn stage-btn--primary" type="button" disabled>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.5M7.8 16.2a6 6 0 0 1 0-8.5M19.1 4.9a10 10 0 0 1 0 14.2M4.9 19.1a10 10 0 0 1 0-14.2"/></svg>
+                    <span>Go Live</span>
+                </button>
+
+                <div class="stage-divider"></div>
+
+                <div class="stage-links">
+                    <a href="index.html" class="btn btn--ghost">Back to radio</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stop lives outside the panel so it stays reachable while the panel is hidden -->
+        <button id="stopBtn" class="stage-btn stage-btn--danger" type="button" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            <span>Stop Broadcast</span>
+        </button>
+
+        <!-- Error Message -->
+        <div class="stage-error card" id="errorMessage" role="alert" style="display: none;">
+            <span class="stage-error-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            </span>
+            <span class="stage-error-text" id="errorText"></span>
+            <button class="stage-error-close" id="errorClose" type="button" aria-label="Dismiss">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+    </div>
+</body>
+
+</html>

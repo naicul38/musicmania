@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html lang="en" data-theme="party">
+
+<head>
+    <title>Live Stage - Vicetream FM</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Watch live DJ performances on Vicetream FM" />
+    <meta name="theme-color" content="#FFF4E0" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <link rel="stylesheet" href="stage.css" />
+    <link rel="shortcut icon" href="assets/css/images/hiclipart.com.png" type="image/x-icon" />
+
+    <script defer src="stage-viewer.js"></script>
+</head>
+
+<body>
+
+    <div class="stage-app">
+        <!-- Video Feed (Live DJ Camera) -->
+        <video id="liveFeed" class="camera-feed" autoplay playsinline></video>
+
+        <!-- Audio Stream (Live DJ Audio) -->
+        <audio id="liveAudio" autoplay></audio>
+
+        <div class="stage-overlay">
+            <div class="stage-equalizer card" id="equalizer" aria-hidden="true">
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+                <div class="stage-eq-bar"></div>
+            </div>
+
+            <div class="stage-status card" id="statusBadge" role="status">
+                <span class="stage-status-dot" aria-hidden="true"></span>
+                <span class="stage-status-text">OFFLINE</span>
+            </div>
+
+            <div class="dj-name card" id="djName" style="display: none;">
+                <span class="dj-name__label">On the decks</span>
+                <span id="djNameText">DJ Name</span>
+            </div>
+        </div>
+
+        <!-- Empty Stage Message -->
+        <div class="empty-stage" id="emptyStage">
+            <div class="empty-stage-content card card--raised">
+                <div class="empty-stage-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/></svg>
+                </div>
+                <h1 class="empty-stage-title">The stage is quiet</h1>
+                <p class="empty-stage-text">No one is live right now. Tune into a station, or book your own set.</p>
+                <div class="empty-stage-actions">
+                    <a href="index.html" class="btn btn--primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                        Back to radio
+                    </a>
+                    <a href="signup.html" class="btn btn--ghost">Book a live set</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back Button (when live) -->
+        <a href="index.html" class="stage-back-btn card" id="backBtn" style="display: none;" aria-label="Back to radio">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </a>
+    </div>
+</body>
+
+</html>
