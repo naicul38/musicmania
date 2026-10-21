@@ -50,6 +50,18 @@
     --on-accent: var(--ink);
 }
 
+/* Appearance mode deliberately lives alongside the station theme: a station can
+   keep its colour identity while the whole interface changes light levels. */
+[data-color-mode="dark"] {
+    --ink: #F8F4FF;
+    --paper: #171526;
+    --surface: #25223A;
+    --text: #F8F4FF;
+    --text-muted: #C5BED8;
+    --danger: #FF7272;
+    --on-accent: #161321;
+}
+
 /* Station themes: flat, saturated, all readable with black text */
 [data-theme="lounge"] { --accent: #FF8A80; --accent-2: #FFD23F; }
 [data-theme="rock"]   { --accent: #FF4D4D; --accent-2: #4D96FF; }
@@ -89,9 +101,13 @@ body {
     line-height: 1.5;
     overflow-x: hidden;
     background-color: color-mix(in srgb, var(--accent) 22%, var(--paper));
-    background-image: radial-gradient(rgba(17, 17, 17, 0.18) 1.2px, transparent 1.2px);
+    background-image: radial-gradient(color-mix(in srgb, var(--ink) 18%, transparent) 1.2px, transparent 1.2px);
     background-size: 18px 18px;
     transition: background-color var(--transition-theme);
+}
+
+[data-color-mode="dark"] body {
+    background-color: color-mix(in srgb, var(--accent) 13%, var(--paper));
 }
 
 button {
@@ -182,6 +198,64 @@ kbd {
 .btn--primary { background: var(--accent); }
 .btn--ghost   { background: var(--surface); }
 .btn--ghost:hover { background: var(--accent-2); }
+.btn--primary { color: var(--on-accent); }
+
+/* A tactile rocker switch for changing the app's appearance. */
+.theme-switch {
+    --switch-width: 62px;
+    --switch-height: 34px;
+    position: relative;
+    flex: 0 0 auto;
+    width: var(--switch-width);
+    height: var(--switch-height);
+    padding: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+    background: #FFD23F;
+    border: var(--border);
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 var(--ink);
+    color: #171321;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.theme-switch::before {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    top: 3px;
+    bottom: 3px;
+    left: 3px;
+    width: calc(50% - 3px);
+    background: var(--surface);
+    border: 2px solid var(--ink);
+    border-radius: 2px;
+    box-shadow: 2px 2px 0 color-mix(in srgb, var(--ink) 72%, transparent);
+    transform: translateX(0) rotate(-2deg);
+    transition: transform var(--dur-med) var(--ease-out), background var(--transition-fast);
+}
+
+.theme-switch[aria-checked="true"] { background: #61617A; }
+.theme-switch[aria-checked="true"]::before {
+    transform: translateX(calc(var(--switch-width) / 2 - 5px)) rotate(2deg);
+    background: #2D2945;
+}
+
+.theme-switch:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+.theme-switch:active { transform: translate(3px, 3px); box-shadow: none; }
+.theme-switch:focus-visible { outline-offset: 3px; }
+
+.theme-switch__icon {
+    position: relative;
+    z-index: 1;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+}
+
+.theme-switch__icon--moon { color: #F8F4FF; }
 
 /* --------------------------------------------------------------------------
    App shell

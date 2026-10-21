@@ -72,6 +72,13 @@
     height: 22px;
 }
 
+.theme-switch--stage {
+    position: fixed;
+    top: max(16px, env(safe-area-inset-top));
+    left: max(76px, calc(env(safe-area-inset-left) + 60px));
+    z-index: 16;
+}
+
 .stage-status {
     position: fixed;
     top: max(16px, env(safe-area-inset-top));
