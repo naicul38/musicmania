@@ -15,18 +15,21 @@
 
     /* Ink & paper */
     --ink: #111111;
+    --outline: #111111;
     --paper: #FFF4E0;
     --surface: #FFFFFF;
     --text: var(--ink);
     --text-muted: #3D3D3D;
     --danger: #FF4D4D;
+    --control-muted: #E8E8E8;
+    --control-muted-text: #444444;
 
     /* Brutal primitives */
     --border-w: 3px;
-    --border: var(--border-w) solid var(--ink);
-    --shadow-sm: 3px 3px 0 var(--ink);
-    --shadow: 5px 5px 0 var(--ink);
-    --shadow-lg: 8px 8px 0 var(--ink);
+    --border: var(--border-w) solid var(--outline);
+    --shadow-sm: 3px 3px 0 var(--outline);
+    --shadow: 5px 5px 0 var(--outline);
+    --shadow-lg: 8px 8px 0 var(--outline);
     --radius: 6px;
     --radius-lg: 10px;
 
@@ -53,13 +56,16 @@
 /* Appearance mode deliberately lives alongside the station theme: a station can
    keep its colour identity while the whole interface changes light levels. */
 [data-color-mode="dark"] {
-    --ink: #F8F4FF;
-    --paper: #171526;
-    --surface: #25223A;
-    --text: #F8F4FF;
-    --text-muted: #C5BED8;
+    --ink: #FCF9FF;
+    --outline: #0D0B16;
+    --paper: #18152A;
+    --surface: #2A2740;
+    --text: #FCF9FF;
+    --text-muted: #D5CEE6;
     --danger: #FF7272;
-    --on-accent: #161321;
+    --control-muted: #37344E;
+    --control-muted-text: #FCF9FF;
+    --on-accent: #0D0B16;
 }
 
 /* Station themes: flat, saturated, all readable with black text */
@@ -107,7 +113,8 @@ body {
 }
 
 [data-color-mode="dark"] body {
-    background-color: color-mix(in srgb, var(--accent) 13%, var(--paper));
+    background-color: color-mix(in srgb, var(--accent) 9%, var(--paper));
+    background-image: radial-gradient(color-mix(in srgb, var(--accent-2) 16%, transparent) 1.2px, transparent 1.2px);
 }
 
 button {
@@ -123,7 +130,7 @@ a {
 }
 
 :focus-visible {
-    outline: 3px dashed var(--ink);
+    outline: 3px dashed var(--accent-2);
     outline-offset: 4px;
 }
 
@@ -134,9 +141,9 @@ kbd {
     padding: 1px 6px;
     margin: 0 1px;
     background: var(--surface);
-    border: 2px solid var(--ink);
+    border: 2px solid var(--outline);
     border-radius: 4px;
-    box-shadow: 2px 2px 0 var(--ink);
+    box-shadow: 2px 2px 0 var(--outline);
 }
 
 /* --------------------------------------------------------------------------
@@ -187,12 +194,12 @@ kbd {
 
 .btn:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--ink);
+    box-shadow: 5px 5px 0 var(--outline);
 }
 
 .btn:active {
     transform: translate(3px, 3px);
-    box-shadow: 0 0 0 var(--ink);
+    box-shadow: 0 0 0 var(--outline);
 }
 
 .btn--primary { background: var(--accent); }
@@ -213,17 +220,17 @@ kbd {
     padding: 0;
     overflow: hidden;
     background:
-        radial-gradient(circle at 50% 7px, var(--ink) 0 2px, transparent 2.5px),
-        radial-gradient(circle at 50% calc(100% - 7px), var(--ink) 0 2px, transparent 2.5px),
+        radial-gradient(circle at 50% 7px, var(--outline) 0 2px, transparent 2.5px),
+        radial-gradient(circle at 50% calc(100% - 7px), var(--outline) 0 2px, transparent 2.5px),
         var(--accent-2);
     border: var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
-    color: var(--ink);
+    color: var(--outline);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-theme);
 }
 
-.theme-switch:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+.theme-switch:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--outline); }
 .theme-switch:active { transform: translate(3px, 3px); box-shadow: none; }
 .theme-switch:focus-visible { outline-color: var(--accent-2); outline-offset: 4px; }
 
@@ -232,10 +239,10 @@ kbd {
     inset: 11px 6px;
     display: block;
     overflow: hidden;
-    border: 2px solid var(--ink);
+    border: 2px solid var(--outline);
     border-radius: 2px;
     background: var(--surface);
-    box-shadow: 2px 2px 0 var(--ink);
+    box-shadow: 2px 2px 0 var(--outline);
     clip-path: polygon(0 4%, 100% 0, 96% 100%, 4% 96%);
     transform: translateY(-1px);
     transition: transform var(--dur-med) var(--ease-out), background var(--transition-theme), clip-path var(--dur-med) var(--ease-out);
@@ -243,8 +250,8 @@ kbd {
 
 /* The inverse slant makes the rocker visibly click to the other side. */
 .theme-switch[aria-checked="true"] .theme-switch__rocker {
-    background: #393552;
-    box-shadow: -2px -2px 0 var(--ink);
+    background: var(--accent);
+    box-shadow: -2px -2px 0 var(--outline);
     clip-path: polygon(4% 0, 96% 4%, 100% 96%, 0 100%);
     transform: translateY(1px);
 }
@@ -263,6 +270,15 @@ kbd {
 .theme-switch__icon--moon { bottom: 5px; color: #f8f4ff; opacity: .45; }
 .theme-switch[aria-checked="true"] .theme-switch__icon:first-child { opacity: .4; }
 .theme-switch[aria-checked="true"] .theme-switch__icon--moon { opacity: 1; }
+
+[data-color-mode="dark"] .theme-switch {
+    background:
+        radial-gradient(circle at 50% 7px, var(--outline) 0 2px, transparent 2.5px),
+        radial-gradient(circle at 50% calc(100% - 7px), var(--outline) 0 2px, transparent 2.5px),
+        var(--surface);
+}
+
+[data-color-mode="dark"] .theme-switch__icon--moon { color: var(--on-accent); }
 
 /* --------------------------------------------------------------------------
    App shell
@@ -356,7 +372,7 @@ kbd {
     gap: 8px;
     min-height: 44px;
     padding: 8px 14px;
-    background: #E8E8E8;
+    background: var(--control-muted);
     border: var(--border);
     border-radius: var(--radius);
     box-shadow: var(--shadow-sm);
@@ -366,19 +382,19 @@ kbd {
     letter-spacing: 0.08em;
     text-transform: uppercase;
     white-space: nowrap;
-    color: #444;
+    color: var(--control-muted-text);
     transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .onair-btn:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--ink);
+    box-shadow: 5px 5px 0 var(--outline);
 }
 
 .onair-indicator {
     width: 10px;
     height: 10px;
-    border: 2px solid var(--ink);
+    border: 2px solid var(--outline);
     border-radius: 50%;
     background: #9A9A9A;
 }
@@ -430,6 +446,11 @@ kbd {
     transform: rotate(-2deg);
 }
 
+[data-color-mode="dark"] .section-title {
+    background: var(--outline);
+    color: var(--text);
+}
+
 /* --------------------------------------------------------------------------
    Player card
    -------------------------------------------------------------------------- */
@@ -462,7 +483,7 @@ kbd {
     border-radius: 50%;
     background:
         repeating-radial-gradient(circle, transparent 0 9px, rgba(255, 255, 255, 0.14) 9px 10px),
-        var(--ink);
+        var(--outline);
     border: var(--border);
     box-shadow: var(--shadow-lg);
 }
@@ -491,7 +512,7 @@ html.is-playing .disc__label {
     height: 12%;
     border-radius: 50%;
     background: var(--paper);
-    border: 2px solid var(--ink);
+    border: 2px solid var(--outline);
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -532,7 +553,7 @@ html.is-playing .disc__label {
     gap: 8px;
     padding: 3px 10px;
     background: var(--accent-2);
-    border: 2px solid var(--ink);
+    border: 2px solid var(--outline);
     border-radius: 4px;
     font-size: 0.75rem;
     font-weight: 700;
@@ -649,19 +670,19 @@ html.is-playing .eq i {
 
 .play-btn:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 7px 7px 0 var(--ink);
+    box-shadow: 7px 7px 0 var(--outline);
 }
 
 /* Pressed-in while playing, like a latched hardware button */
 .play-btn:active,
 .play-btn.playing {
     transform: translate(5px, 5px);
-    box-shadow: 0 0 0 var(--ink);
+    box-shadow: 0 0 0 var(--outline);
 }
 
 .play-btn.playing:hover {
     transform: translate(3px, 3px);
-    box-shadow: 2px 2px 0 var(--ink);
+    box-shadow: 2px 2px 0 var(--outline);
 }
 
 .play-btn__icon {
@@ -735,19 +756,19 @@ html.is-loading .play-btn .play-btn__icon--loading {
 @media (hover: hover) {
     .station:hover {
         transform: translate(-2px, -2px);
-        box-shadow: 7px 7px 0 var(--ink);
+        box-shadow: 7px 7px 0 var(--outline);
     }
 }
 
 .station:active {
     transform: translate(5px, 5px);
-    box-shadow: 0 0 0 var(--ink);
+    box-shadow: 0 0 0 var(--outline);
 }
 
 .station.active {
     background: var(--tile);
     transform: translate(5px, 5px);
-    box-shadow: 0 0 0 var(--ink);
+    box-shadow: 0 0 0 var(--outline);
 }
 
 .station__icon {

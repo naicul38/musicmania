@@ -59,7 +59,7 @@
 
 .stage-back-btn:hover {
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--ink);
+    box-shadow: 5px 5px 0 var(--outline);
 }
 
 .stage-back-btn:active {
@@ -98,7 +98,7 @@
 .stage-status-dot {
     width: 12px;
     height: 12px;
-    border: 2px solid var(--ink);
+    border: 2px solid var(--outline);
     border-radius: 50%;
     background: #9A9A9A;
 }
@@ -162,7 +162,7 @@
     height: 30px;
     max-height: 100%;
     background: var(--accent);
-    border: 2px solid var(--ink);
+    border: 2px solid var(--outline);
     animation: eq-idle 1.2s steps(6) infinite;
     transition: height 80ms linear;
 }
@@ -274,6 +274,11 @@
     transform: rotate(-2deg);
 }
 
+[data-color-mode="dark"] .stage-eyebrow {
+    background: var(--outline);
+    color: var(--text);
+}
+
 .stage-title {
     font-family: var(--font-display);
     font-weight: 400;
@@ -354,7 +359,7 @@
 
 .stage-btn:hover:not(:disabled) {
     transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 var(--ink);
+    box-shadow: 5px 5px 0 var(--outline);
 }
 
 .stage-btn:active:not(:disabled) {
@@ -389,7 +394,7 @@
 
 .stage-divider {
     height: 0;
-    border-top: 3px dashed var(--ink);
+    border-top: 3px dashed var(--outline);
     margin: 4px 0;
 }
 
